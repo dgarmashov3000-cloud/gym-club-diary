@@ -1,0 +1,1390 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2563eb">
+<title>Дневник тренировок</title>
+<style>
+:root{--bg:#f3f4f6;--card:#fff;--text:#111827;--muted:#6b7280;--border:#e5e7eb;--accent:#2563eb;--accent-fg:#fff;--ok:#16a34a;--ok-bg:#dcfce7;--danger:#dc2626;--warn:#92400e;--warn-bg:#fef3c7;--input:#fff;--nav-h:70px}
+[data-theme=dark]{--bg:#0f1115;--card:#181b22;--text:#e5e7eb;--muted:#9ca3af;--border:#2b303b;--accent:#3b82f6;--accent-fg:#fff;--ok:#4ade80;--ok-bg:#14532d;--danger:#f87171;--warn:#fcd34d;--warn-bg:#422006;--input:#0f1218}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+body{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 12px)}
+a{color:var(--accent);text-decoration:none}
+h1{font-size:24px;margin:10px 0 12px}
+h2{font-size:18px;margin:20px 0 8px}
+h3{font-size:16px;margin:8px 0}
+p{margin:6px 0}
+.wrap{max-width:900px;margin:0 auto;padding:12px 14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:12px}
+.link-card{display:block;color:inherit;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px;margin-bottom:12px}
+.row{display:flex;align-items:center;gap:8px}
+.between{justify-content:space-between}
+.grow{flex:1;min-width:0}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.hidden{display:none!important}
+.err-txt{color:var(--danger)}
+.warn{color:var(--warn)}
+.grid2,.grid3{display:grid;gap:8px}
+.grid2{grid-template-columns:1fr 1fr}
+.grid3{grid-template-columns:1fr 1fr 1fr}
+.fl{display:block;font-size:14px;color:var(--muted);margin:10px 0}
+.fl .inp{margin-top:4px}
+.inp{display:block;width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--input);color:var(--text);font:inherit;font-size:16px}
+.inp.big{font-size:18px;font-weight:600}
+.inp.sm{width:96px;min-height:40px}
+.inp.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px}
+textarea.inp{min-height:64px;resize:vertical}
+.btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:48px;padding:0 16px;border-radius:14px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;text-align:center}
+.btn-primary{background:var(--accent);color:var(--accent-fg);border-color:transparent}
+.btn-ok{background:var(--ok);color:#fff;border-color:transparent}
+.btn-danger{color:var(--danger)}
+.btn-ghost{background:transparent;border-style:dashed;color:var(--accent)}
+.btn-xl{min-height:64px;font-size:18px}
+.btn-block{width:100%}
+.btn.tab{flex:1}
+.btn.tab.on{background:var(--accent);color:var(--accent-fg);border-color:transparent}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.actions>.btn{flex:1 1 auto}
+.icon-btn{width:44px;height:44px;border:0;border-radius:12px;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;flex:none}
+.icon-btn.sm{width:40px;height:40px}
+.handle{width:30px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:22px;cursor:grab;touch-action:none;user-select:none;flex:none}
+.tag{font-size:11px;background:var(--border);color:var(--muted);border-radius:6px;padding:2px 6px;margin-left:4px;vertical-align:middle}
+.ex{padding:12px}
+.ex.dragging{opacity:.75;box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.ex-head{display:flex;align-items:center;gap:6px}
+.ex-name{font-weight:700;font-size:17px}
+.ex-settings{margin:8px 0}
+.ex-settings .small{display:flex;align-items:center;gap:8px}
+.prev{font-size:14px;color:var(--muted);margin:6px 0}
+.prev b{color:var(--text)}
+.hint{background:var(--warn-bg);color:var(--warn);border-radius:12px;padding:8px 10px;font-size:14px;margin:8px 0}
+.set{border-top:1px dashed var(--border);padding:8px 0}
+.set.done{background:var(--ok-bg);border-radius:12px;border-top-color:transparent;padding:8px;margin:6px 0}
+.set-row{display:grid;grid-template-columns:1fr 1fr 48px 40px;gap:6px;align-items:center}
+.set-row.edit{grid-template-columns:1fr 1fr 40px}
+.set-meta{display:grid;grid-template-columns:132px 1fr;gap:6px;margin-top:6px}
+.done-btn{width:48px;height:48px;border-radius:12px;border:2px solid var(--border);background:var(--input);color:var(--muted);font-size:20px;font-weight:700;cursor:pointer}
+.done-btn.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.timer{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px 6px;text-align:center}
+.stat b{display:block;font-size:20px}
+.stat span{font-size:12px;color:var(--muted)}
+.list-item{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;color:var(--text);font:inherit;cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border);border-radius:999px;padding:6px 10px;font-size:14px;color:var(--text)}
+.plate{background:var(--border);border-radius:8px;padding:2px 8px;font-weight:600}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th,.tbl td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr.pr td{background:var(--ok-bg)}
+.tbl select{min-height:40px}
+.wrapx{overflow-x:auto}
+.chart{display:block;width:100%;height:auto}
+.empty{text-align:center;padding:26px 12px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal .wk{font-size:12px;color:var(--muted);padding:4px 0}
+.cal button{aspect-ratio:1;border:0;border-radius:10px;background:transparent;color:var(--text);font:inherit;cursor:pointer;position:relative;padding:0}
+.cal button.today{outline:2px solid var(--accent);outline-offset:-2px}
+.cal button.sel{background:var(--accent);color:var(--accent-fg)}
+.cal button.has::after{content:"";position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.cal button.sel.has::after{background:var(--accent-fg)}
+.month{display:flex;align-items:center;justify-content:space-between;margin:8px 0}
+.bar-row{display:grid;grid-template-columns:120px 1fr 32px;gap:8px;align-items:center;margin:6px 0;font-size:14px}
+.bar-bg{background:var(--border);border-radius:7px;height:14px;overflow:hidden}
+.bar{height:14px;background:var(--accent);border-radius:7px}
+.rest{position:fixed;left:0;right:0;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--accent);color:#fff;z-index:40}
+.rest .btn{min-height:40px;padding:0 10px;font-size:14px;background:rgba(255,255,255,.2);color:#fff;border:0}
+.rest b{font-size:22px;font-variant-numeric:tabular-nums;min-width:64px}
+.rest-label{font-size:13px;opacity:.9;margin-right:auto}
+.toasts{position:fixed;left:0;right:0;bottom:calc(var(--nav-h) + 12px);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:60;pointer-events:none}
+.toast{background:#111827;color:#fff;padding:10px 14px;border-radius:12px;font-size:14px;max-width:90vw;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.nav{position:fixed;left:0;right:0;bottom:0;height:calc(var(--nav-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);display:flex;background:var(--card);border-top:1px solid var(--border);z-index:45}
+.nav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--muted);font-size:11px;min-width:0}
+.nav a .ico{font-size:22px;line-height:1}
+.nav a.on{color:var(--accent);font-weight:700}
+@media (min-width:768px){
+ :root{--nav-h:56px}
+ body{padding-bottom:24px}
+ .nav{position:sticky;top:0;bottom:auto;height:auto;padding:0;border-top:0;border-bottom:1px solid var(--border)}
+ .nav a{flex-direction:row;gap:6px;font-size:15px;padding:0 4px;min-height:56px}
+ .nav a .ico{font-size:18px}
+ .rest{left:50%;right:auto;bottom:20px;transform:translateX(-50%);border-radius:16px;width:min(520px,calc(100% - 32px))}
+ .toasts{bottom:24px}
+}
+</style>
+</head>
+<body>
+<nav class="nav" id="nav">
+  <a href="#/" data-nav="home"><span class="ico">🏠</span><span>Главная</span></a>
+  <a href="#/workout" data-nav="workout"><span class="ico">▶️</span><span>Тренировка</span></a>
+  <a href="#/history" data-nav="history"><span class="ico">📅</span><span>История</span></a>
+  <a href="#/exercises" data-nav="exercises"><span class="ico">📚</span><span>Упражнения</span></a>
+  <a href="#/progress" data-nav="progress"><span class="ico">📈</span><span>Прогресс</span></a>
+  <a href="#/settings" data-nav="settings"><span class="ico">⚙️</span><span>Настройки</span></a>
+</nav>
+<main class="wrap" id="app"></main>
+<div class="rest hidden" id="rest">
+  <span class="rest-label">Отдых</span>
+  <b id="rest-time">00:00</b>
+  <button class="btn" data-act="rest-adj" data-d="-15">−15 с</button>
+  <button class="btn" data-act="rest-adj" data-d="15">+15 с</button>
+  <button class="btn" data-act="rest-skip">Пропустить</button>
+</div>
+<div class="toasts" id="toasts"></div>
+<script>
+'use strict';
+const KEY='gymdiary.v1';
+const LB=2.20462;
+const DATA_KEYS=['exercises','workouts','workoutExercises','sets','templates','bodyMetrics'];
+const MUSCLES=['грудь','спина','плечи','бицепс','трицепс','предплечья','квадрицепсы','бицепс бедра','ягодицы','икры','пресс','поясница'];
+const EQUIP=['штанга','гантели','гиря','тренажёр','блок','собственный вес','резина','кардиотренажёр','другое'];
+const SET_TYPES={working:'Рабочий',warmup:'Разминка',drop:'Дроп-сет',failure:'До отказа'};
+const METRICS=[['max','Макс. вес'],['ton','Тоннаж'],['1rm','Расчётный 1RM']];
+
+/* ---------- утилиты ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const pad=n=>String(n).padStart(2,'0');
+const dateKey=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const keyAgo=n=>{const d=new Date();d.setDate(d.getDate()-n);return dateKey(d);};
+const fmtDate=k=>{const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});};
+const shortDate=k=>k.slice(8,10)+'.'+k.slice(5,7);
+const fmtDur=sec=>{sec=Math.max(0,Math.floor(sec));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h?`${h}:${pad(m)}:${pad(s)}`:`${pad(m)}:${pad(s)}`;};
+const norm=s=>String(s??'').toLowerCase().replace(/ё/g,'е').trim();
+const parseNum=s=>{const t=String(s??'').trim().replace(',','.');if(t==='')return null;const n=Number(t);return Number.isFinite(n)?n:null;};
+const toUnit=(kg,unit)=>unit==='lb'?kg*LB:kg;
+const fromUnit=(v,unit)=>Math.round((unit==='lb'?v/LB:v)*1000)/1000;
+const est1rm=(w,r)=>r===1?w:w*(1+r/30);
+function unitL(){return db.settings.unit==='lb'?'фунт':'кг';}
+function toDisp(kg){if(kg==null)return '';const v=toUnit(kg,db.settings.unit);return db.settings.unit==='lb'?Math.round(v*10)/10:Math.round(v*100)/100;}
+function toKg(v){return fromUnit(v,db.settings.unit);}
+function numKg(s){const n=parseNum(s);return n==null?null:toKg(n);}
+function fmtTon(kg){return Math.round(toDisp(kg)||0).toLocaleString('ru-RU');}
+
+/* ---------- библиотека упражнений: название, основная группа, вспомогательные, оборудование, тип, описание ---------- */
+const LIB=[
+['Жим штанги лёжа','грудь',['трицепс','плечи'],'штанга','strength','Лягте на скамью и возьмите гриф хватом чуть шире плеч. Опустите гриф к середине груди и выжмите его вверх.'],
+['Жим гантелей лёжа','грудь',['трицепс','плечи'],'гантели','strength','Лёжа на скамье выжимайте гантели от груди вверх и сводите их вверху. Опускайте медленно, локти держите под углом к корпусу.'],
+['Жим штанги на наклонной скамье','грудь',['плечи','трицепс'],'штанга','strength','Скамья под углом 30–45 градусов, гриф опускается к верхней части груди. Выжимайте вверх, не отрывая таз от скамьи.'],
+['Жим гантелей на наклонной скамье','грудь',['плечи','трицепс'],'гантели','strength','Наклонная скамья, гантели опускаются к верхней части груди. Лопатки держите сведёнными.'],
+['Жим в тренажёре от груди','грудь',['трицепс','плечи'],'тренажёр','strength','Сядьте, спина прижата к опоре. Жмите рукояти вперёд, не отрывая лопатки от спинки.'],
+['Сведение рук в кроссовере','грудь',['плечи'],'блок','strength','Встаньте между блоками и сводите рукояти перед собой по дуге. Локти слегка согнуты, корпус неподвижен.'],
+['Сведение гантелей лёжа','грудь',['плечи'],'гантели','strength','Лёжа на скамье разведите руки с гантелями в стороны. Сводите их над грудью по широкой дуге.'],
+['Бабочка','грудь',['плечи'],'тренажёр','strength','Сядьте в тренажёр, предплечья на валиках. Сводите валики перед грудью и медленно возвращайтесь.'],
+['Пулловер с гантелью','грудь',['спина','трицепс'],'гантели','strength','Лёжа поперёк скамьи держите гантель над грудью. Опускайте её за голову по дуге и возвращайте назад.'],
+['Отжимания от пола','грудь',['трицепс','плечи'],'собственный вес','strength','Упор лёжа, руки чуть шире плеч. Опускайте грудь к полу и выжимайтесь, держа корпус прямым.'],
+['Отжимания на брусьях','грудь',['трицепс','плечи'],'собственный вес','strength','Опирайтесь на брусья, слегка наклонившись вперёд. Опускайтесь до растяжения в груди и выжимайтесь вверх.'],
+['Подтягивания широким хватом','спина',['бицепс','предплечья'],'собственный вес','strength','Хват шире плеч. Подтягивайте грудь к перекладине и опускайтесь полностью, без рывков.'],
+['Подтягивания обратным хватом','спина',['бицепс','предплечья'],'собственный вес','strength','Ладони смотрят на вас, хват на ширине плеч. Подтягивайтесь, сводя локти вниз и назад.'],
+['Подтягивания нейтральным хватом','спина',['бицепс','предплечья'],'собственный вес','strength','Ладони смотрят друг на друга. Подтягивайте корпус вверх, сводя лопатки.'],
+['Тяга верхнего блока к груди','спина',['бицепс'],'блок','strength','Сядьте, зафиксируйте бёдра под валиком. Тяните гриф к верхней части груди, отводя локти назад.'],
+['Тяга нижнего блока к поясу','спина',['бицепс','поясница'],'блок','strength','Сидя с упором в стопы тяните рукоять к поясу. Держите спину прямой и сводите лопатки.'],
+['Тяга штанги в наклоне','спина',['бицепс','поясница'],'штанга','strength','Корпус наклонён примерно на 45 градусов. Тяните гриф к низу живота, сводя лопатки.'],
+['Тяга гантели в наклоне одной рукой','спина',['бицепс'],'гантели','strength','Опирайтесь одной рукой и коленом о скамью. Тяните гантель к поясу, локоть ведите вдоль корпуса.'],
+['Тяга Т-грифа','спина',['бицепс','поясница'],'штанга','strength','Встаньте над грифом в наклоне и тяните упор к груди. Спину держите ровной.'],
+['Тяга горизонтального блока','спина',['бицепс'],'тренажёр','strength','Сидя с прямой спиной тяните рукояти к себе. Локти идут назад вдоль корпуса.'],
+['Пуловер на блоке','спина',['грудь','трицепс'],'блок','strength','Стоя лицом к блоку ведите прямые руки вниз дугой. Двигается только плечевой сустав.'],
+['Шраги с гантелями','спина',['плечи'],'гантели','strength','Опустите плечи вниз и поднимайте их к ушам. Руки держите прямыми.'],
+['Становая тяга','поясница',['ягодицы','бицепс бедра','спина'],'штанга','strength','Гриф над серединой стопы, спина прямая. Поднимайте штангу, выпрямляя бёдра и корпус одновременно.'],
+['Становая тяга сумо','ягодицы',['бицепс бедра','квадрицепсы','поясница'],'штанга','strength','Широкая стойка, носки развёрнуты. Поднимайте гриф, выпрямляя ноги и корпус вместе.'],
+['Гиперэкстензия','поясница',['ягодицы','бицепс бедра'],'собственный вес','strength','Зафиксируйте стопы под валиками. Опускайтесь до параллели с полом и поднимайтесь, сжимая ягодицы.'],
+['Гребной тренажёр','спина',['бицепс','плечи'],'кардиотренажёр','cardio','Тяните рукоять к груди, одновременно отталкиваясь ногами. Работайте ровно и ритмично.'],
+['Жим штанги стоя','плечи',['трицепс','пресс'],'штанга','strength','Стойте прямо, гриф у ключиц. Выжимайте штангу над головой, не прогибая поясницу.'],
+['Жим гантелей сидя','плечи',['трицепс'],'гантели','strength','Сидя на скамье со спинкой выжимайте гантели над головой. Опускайте их до уровня ушей.'],
+['Жим Арнольда','плечи',['трицепс'],'гантели','strength','Начните с гантелями у груди ладонями к себе. В процессе жима разворачивайте кисти наружу.'],
+['Жим в тренажёре для плеч','плечи',['трицепс'],'тренажёр','strength','Сядьте, спина прижата к спинке. Выжимайте рукояти вверх и медленно опускайте их.'],
+['Махи гантелями в стороны','плечи',[],'гантели','strength','Слегка согнутые локти, поднимайте гантели в стороны до уровня плеч. Опускайте медленно.'],
+['Махи гантелями перед собой','плечи',[],'гантели','strength','Поднимайте прямые руки с гантелями перед собой до уровня глаз. Не раскачивайте корпус.'],
+['Задние дельты в наклоне','плечи',['спина'],'гантели','strength','Наклонитесь вперёд и поднимайте руки с гантелями в стороны. Сводите лопатки в верхней точке.'],
+['Обратная бабочка','плечи',['спина'],'тренажёр','strength','Сидя лицом к спинке разводите рукояти назад. Локти слегка согнуты.'],
+['Тяга штанги к подбородку','плечи',['предплечья'],'штанга','strength','Хват уже плеч, гриф ведите вдоль корпуса вверх. Локти выше грифа.'],
+['Лицевая тяга на блоке','плечи',['спина'],'блок','strength','Канат на уровне лица, тяните к себе и разводите руки. Локти держите выше кистей.'],
+['Сгибания штанги стоя','бицепс',['предплечья'],'штанга','strength','Локти прижаты к корпусу, поднимайте гриф к груди. Опускайте медленно, не раскачиваясь.'],
+['Сгибания гантелей на наклонной скамье','бицепс',['предплечья'],'гантели','strength','Сидя на наклонной скамье руки свободно свисают. Сгибайте руки, не двигая локтями.'],
+['Молотковые сгибания','бицепс',['предплечья'],'гантели','strength','Держите гантели нейтральным хватом и поднимайте их. Локти остаются неподвижными.'],
+['Сгибания на скамье Скотта','бицепс',['предплечья'],'штанга','strength','Предплечья лежат на подушке, поднимайте гриф вверх. Опускайтесь до полного разгибания.'],
+['Сгибания на нижнем блоке','бицепс',['предплечья'],'блок','strength','Стойте лицом к блоку и сгибайте руки с прямым грифом. Локти прижаты к корпусу.'],
+['Концентрированные сгибания','бицепс',[],'гантели','strength','Сидя, локоть упирается во внутреннюю часть бедра. Поднимайте гантель, поворачивая кисть.'],
+['Сгибания в тренажёре','бицепс',[],'тренажёр','strength','Сядьте, предплечья на опоре. Сгибайте руки до конца и медленно возвращайтесь.'],
+['Сгибания рук с гантелями стоя','бицепс',['предплечья'],'гантели','strength','Стоя прямо, поднимайте гантели по очереди или вместе. Не раскачивайте корпус.'],
+['Французский жим лёжа','трицепс',[],'штанга','strength','Лёжа, гриф над лбом. Сгибайте локти, опуская гриф к голове, и выпрямляйте руки.'],
+['Разгибания на блоке с канатом','трицепс',[],'блок','strength','Локти прижаты к корпусу, тяните канат вниз до полного разгибания. В конце разводите канат.'],
+['Разгибания на блоке с прямой рукоятью','трицепс',[],'блок','strength','Стоя лицом к блоку разгибайте руки вниз. Плечи остаются неподвижными.'],
+['Жим лёжа узким хватом','трицепс',['грудь','плечи'],'штанга','strength','Хват на ширине плеч, локти идут вдоль корпуса. Выжимайте гриф вверх.'],
+['Разгибания гантели из-за головы','трицепс',[],'гантели','strength','Сидя держите гантель двумя руками за головой. Разгибайте руки вверх.'],
+['Отжимания с узкой постановкой','трицепс',['грудь','плечи'],'собственный вес','strength','Ладони близко друг к другу под грудью. Опускайтесь и выжимайтесь, локти идут вдоль тела.'],
+['Разгибания руки с гантелью в наклоне','трицепс',[],'гантели','strength','Корпус наклонён, локоть зафиксирован у корпуса. Разгибайте руку назад.'],
+['Разгибания в тренажёре','трицепс',[],'тренажёр','strength','Сядьте в тренажёр и разгибайте рукояти вниз. Локти не отходят от корпуса.'],
+['Обратные отжимания от скамьи','трицепс',['плечи'],'собственный вес','strength','Ладони на краю скамьи, сгибайте и разгибайте руки. Таз держите близко к скамье.'],
+['Сгибания запястий со штангой','предплечья',[],'штанга','strength','Предплечья лежат на коленях, ладони вверх. Поднимайте гриф, сгибая кисти.'],
+['Разгибания запястий со штангой','предплечья',[],'штанга','strength','Ладони вниз, предплечья на коленях. Поднимайте гриф, разгибая кисти.'],
+['Сгибания запястий с гантелью','предплечья',[],'гантели','strength','Опирайтесь предплечьем о колено и сгибайте запястье с гантелью вверх.'],
+['Фермерская прогулка','предплечья',['спина','пресс'],'гантели','strength','Возьмите тяжёлые гантели и идите ровным шагом. Держите спину прямой, плечи назад.'],
+['Вис на турнике','предплечья',['спина'],'собственный вес','strength','Хват перекладины, тело свободно висит. Старайтесь держаться как можно дольше.'],
+['Приседания со штангой на спине','квадрицепсы',['ягодицы','поясница'],'штанга','strength','Гриф на верхней части трапеции, стопы на ширине плеч. Приседайте до параллели бёдер с полом.'],
+['Фронтальные приседания','квадрицепсы',['пресс','ягодицы'],'штанга','strength','Гриф на передних дельтах, локти высоко. Приседайте, держа корпус вертикально.'],
+['Жим ногами','квадрицепсы',['ягодицы'],'тренажёр','strength','Сядьте в жим, стопы на платформе на ширине плеч. Опускайте платформу до сгиба колен и выжимайте.'],
+['Гакк-приседания','квадрицепсы',['ягодицы'],'тренажёр','strength','Спина прижата к опоре тренажёра, плечи под валиками. Приседайте, держа пятки на платформе.'],
+['Разгибания ног в тренажёре','квадрицепсы',[],'тренажёр','strength','Сядьте, валик на голенях. Разгибайте ноги до прямого положения и медленно возвращайтесь.'],
+['Выпады с гантелями','квадрицепсы',['ягодицы'],'гантели','strength','Сделайте шаг вперёд и опускайте таз, пока колено заднего бедра почти не коснётся пола. Вернитесь в исходное положение.'],
+['Болгарские сплит-приседания','квадрицепсы',['ягодицы'],'гантели','strength','Задняя стопа лежит на скамье, приседайте на передней ноге. Держите корпус ровно.'],
+['Гоблет-приседания','квадрицепсы',['ягодицы','пресс'],'гиря','strength','Держите гирю у груди и приседайте глубоко. Локти направлены вниз.'],
+['Приседания без веса','квадрицепсы',['ягодицы'],'собственный вес','strength','Ноги на ширине плеч, носки слегка развёрнуты. Опускайтесь до параллели и возвращайтесь.'],
+['Подъём на тумбу','квадрицепсы',['ягодицы'],'другое','strength','Встаньте одной ногой на тумбу и поднимайтесь, выпрямляя ногу. Опускайтесь медленно.'],
+['Приседания сумо с гирей','квадрицепсы',['ягодицы'],'гиря','strength','Широкая стойка, гиря между ногами. Приседайте, держа корпус прямо.'],
+['Румынская тяга со штангой','бицепс бедра',['ягодицы','поясница'],'штанга','strength','Ноги почти прямые, гриф скользит вдоль ног. Опускайте таз назад до растяжения задней поверхности бедра.'],
+['Румынская тяга с гантелями','бицепс бедра',['ягодицы'],'гантели','strength','Гантели в руках, наклон вперёд с прямой спиной. Возвращайтесь, сжимая ягодицы.'],
+['Сгибания ног лёжа в тренажёре','бицепс бедра',[],'тренажёр','strength','Лёжа животом на скамье сгибайте ноги к ягодицам. Медленно опускайте валик.'],
+['Сгибания ног сидя','бицепс бедра',[],'тренажёр','strength','Сядьте в тренажёр, валик на голенях. Сгибайте ноги вниз и медленно возвращайтесь.'],
+['Становая тяга на прямых ногах','бицепс бедра',['поясница','ягодицы'],'штанга','strength','Ноги почти прямые, штанга у ног. Опускайте гриф вниз, сохраняя прямую спину.'],
+['Good morning','поясница',['бицепс бедра'],'штанга','strength','Гриф на плечах, колени чуть согнуты. Наклоняйтесь вперёд с прямой спиной, сводя лопатки.'],
+['Ягодичный мост со штангой','ягодицы',['бицепс бедра'],'штанга','strength','Лёжа на спине, гриф на тазу. Поднимайте таз, сжимая ягодицы в верхней точке.'],
+['Ягодичный мост','ягодицы',['бицепс бедра'],'собственный вес','strength','Лёжа на спине, ноги согнуты. Поднимайте таз и сжимайте ягодицы в верхней точке.'],
+['Ягодичный мост с гантелью','ягодицы',['бицепс бедра'],'гантели','strength','Гантель лежит на тазу, поднимайте таз вверх. Опускайтесь медленно.'],
+['Махи гирей','ягодицы',['бицепс бедра','поясница'],'гиря','strength','Стойте на ширине плеч, гиря между ногами. Выталкивайте бёдра вперёд и поднимайте гирю до уровня груди.'],
+['Отведение бедра в тренажёре','ягодицы',[],'тренажёр','strength','Сядьте в тренажёр и разводите ноги в стороны. Держите корпус прямо.'],
+['Отведение ноги с резиной','ягодицы',[],'резина','strength','Резина на бёдрах или голенях, отводите ногу в сторону. Не раскачивайте корпус.'],
+['Отведение ноги назад в кроссовере','ягодицы',[],'блок','strength','Лодыжка у блока, отводите ногу назад, сжимая ягодицы. Корпус слегка наклонён вперёд.'],
+['Шаги назад с резиной','ягодицы',['квадрицепсы'],'резина','strength','Резина на ногах, шагайте назад и сохраняйте напряжение.'],
+['Подъём на носки стоя в тренажёре','икры',[],'тренажёр','strength','Плечи под валиками, поднимайтесь на носки и опускайтесь ниже уровня платформы.'],
+['Подъём на носки стоя со штангой','икры',[],'штанга','strength','Гриф на плечах, стопы на подставке. Поднимайтесь максимально высоко и опускайтесь медленно.'],
+['Подъём на носки сидя','икры',[],'тренажёр','strength','Сидя в тренажёре, колени под валиком. Поднимайтесь на носки и медленно опускайтесь.'],
+['Подъём на носки на одной ноге','икры',[],'гантели','strength','Держите гантель в руке и стойте на одной ноге на ступеньке. Поднимайтесь на носок.'],
+['Подъём на носки на степе','икры',[],'собственный вес','strength','Стопы на краю ступеньки. Опускайте пятки ниже уровня ступеньки и поднимайтесь.'],
+['Скручивания','пресс',[],'собственный вес','strength','Лёжа на спине, колени согнуты. Поднимайте плечи, напрягая мышцы живота.'],
+['Подъём ног в висе','пресс',['предплечья'],'собственный вес','strength','Висите на перекладине и поднимайте прямые ноги до уровня таза. Опускайте медленно.'],
+['Планка','пресс',['поясница','плечи'],'собственный вес','strength','Упор на предплечья и носки, тело прямой линией. Держите положение, не прогибаясь.'],
+['Боковая планка','пресс',['плечи'],'собственный вес','strength','Опора на предплечье и бок стопы, тело прямой линией. Держите положение с каждой стороны.'],
+['Ролик для пресса','пресс',['плечи','спина'],'другое','strength','Встаньте на колени с роликом в руках. Выкатывайте ролик вперёд, не прогибая поясницу.'],
+['Русские скручивания с гирей','пресс',[],'гиря','strength','Сидя с наклоном назад держите гирю у груди. Поворачивайте корпус из стороны в сторону.'],
+['Скручивания на блоке','пресс',[],'блок','strength','Стоя на коленях у блока с канатом скручивайте корпус вниз. Таз не двигается.'],
+['Велосипед','пресс',[],'собственный вес','strength','Лёжа на спине поочерёдно тяните локоть к противоположному колену. Работайте медленно.'],
+['Скручивания в тренажёре','пресс',[],'тренажёр','strength','Сядьте в тренажёр и сгибайте корпус вперёд. Возвращайтесь медленно.'],
+['Супермен','поясница',['ягодицы'],'собственный вес','strength','Лёжа животом поднимайте руки и ноги одновременно. Удерживайте положение в верхней точке.'],
+['Птица-собака','поясница',['пресс','ягодицы'],'собственный вес','strength','Из упора на четвереньках выпрямляйте противоположные руку и ногу. Держите спину ровной.'],
+['Разгибание корпуса в тренажёре','поясница',['ягодицы'],'тренажёр','strength','Сядьте в тренажёр и разгибайте корпус назад против сопротивления. Поясница не должна округляться.'],
+['Беговая дорожка','квадрицепсы',['икры'],'кардиотренажёр','cardio','Ходьба или бег с выбранным уклоном. Держите ровный темп и следите за пульсом.'],
+['Велотренажёр','квадрицепсы',['икры'],'кардиотренажёр','cardio','Крутите педали ровным темпом с умеренным сопротивлением. Спина прямая, плечи расслаблены.'],
+['Эллипсоид','квадрицепсы',['ягодицы'],'кардиотренажёр','cardio','Работайте ногами и руками на эллипсоиде. Старайтесь держать равномерный ритм.'],
+['Степпер','квадрицепсы',['ягодицы'],'кардиотренажёр','cardio','Поднимайтесь по ступеням в ровном темпе. Не опирайтесь на поручни.'],
+['Скакалка','икры',['плечи'],'другое','cardio','Прыгайте с минимальным отрывом от пола. Вращайте скакалку кистями.']
+];
+
+/* ---------- состояние и хранение ---------- */
+let db;
+let rest=null;
+let pendingImport=null;
+let drag=null;
+const ui={addOpen:false,newExOpen:false,newExPage:false,textOpen:false,text:'',textChoice:{},calc:null,pcBar:null,pcTarget:'',wcWork:'',exQ:'',exListQ:'',exGroup:'',exEquip:'',histMonth:null,histQ:'',histDay:null,progTab:'ex',progEx:null,progMetric:'max'};
+
+function seedExercises(){return LIB.map((r,i)=>({id:'lib'+i,name:r[0],muscleGroups:[r[1],...r[2]],equipment:r[3],type:r[4],description:r[5],isCustom:false,targetRepRange:r[4]==='strength'?{min:8,max:12}:null,weightStep:2.5}));}
+function freshDB(){return{exercises:seedExercises(),workouts:[],workoutExercises:[],sets:[],templates:[],bodyMetrics:[],settings:{unit:'kg',theme:'system',restDefault:90},currentWorkoutId:null};}
+function loadDB(){
+ try{
+   const raw=localStorage.getItem(KEY);
+   if(raw){const d=JSON.parse(raw);const base=freshDB();return{...base,...d,settings:{...base.settings,...(d.settings||{})}};}
+ }catch(e){console.error(e);}
+ return freshDB();
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db));}catch(e){toast('Не удалось сохранить: закончилось место в браузере');}}
+
+/* ---------- выборки ---------- */
+const exById=id=>db.exercises.find(e=>e.id===id);
+const wexOf=wid=>db.workoutExercises.filter(x=>x.workoutId===wid).sort((a,b)=>a.order-b.order);
+const setsOf=xid=>db.sets.filter(s=>s.workoutExerciseId===xid);
+const finished=()=>db.workouts.filter(w=>w.durationSec!=null);
+function currentWorkout(){const w=db.workouts.find(x=>x.id===db.currentWorkoutId);return w&&w.durationSec==null?w:null;}
+function tonnage(wid){return wexOf(wid).reduce((sum,x)=>sum+setsOf(x.id).filter(s=>s.done&&s.type!=='warmup'&&s.weight!=null&&s.reps!=null).reduce((a,s)=>a+s.weight*s.reps,0),0);}
+function setsDone(wid){return wexOf(wid).reduce((n,x)=>n+setsOf(x.id).filter(s=>s.done).length,0);}
+function lastFinished(exId){
+ for(const w of finished().sort((a,b)=>b.startedAt-a.startedAt)){
+   const x=db.workoutExercises.find(y=>y.workoutId===w.id&&y.exerciseId===exId);
+   if(x) return {workout:w,sets:setsOf(x.id).filter(s=>s.done)};
+ }
+ return null;
+}
+function progressionHint(ex){
+ if(!ex||ex.type==='cardio'||!ex.targetRepRange||ex.targetRepRange.max==null) return '';
+ const last=lastFinished(ex.id);
+ if(!last) return '';
+ const ws=last.sets.filter(s=>s.type!=='warmup');
+ if(!ws.length||!ws.every(s=>s.reps!=null&&s.reps>=ex.targetRepRange.max)) return '';
+ const withW=ws.filter(s=>s.weight!=null);
+ if(!withW.length) return '';
+ const next=Math.max(...withW.map(s=>s.weight))+(ex.weightStep||2.5);
+ return `Увеличьте вес до ${toDisp(next)} ${unitL()}`;
+}
+function fmtSet(s,ex){
+ if(ex&&ex.type==='cardio') return `${s.minutes??'—'} мин${s.distanceKm!=null?' · '+s.distanceKm+' км':''}`;
+ return `${s.weight==null?'—':toDisp(s.weight)} × ${s.reps??'—'}`;
+}
+function prevLine(ex){
+ const last=lastFinished(ex.id);
+ if(!last||!last.sets.length) return '';
+ return `<div class="prev">Прошлый раз (${shortDate(last.workout.date)}): <b>${last.sets.map(s=>fmtSet(s,ex)).join(', ')}</b></div>`;
+}
+
+/* ---------- тренировка ---------- */
+function ensureWorkout(){
+ let w=currentWorkout();
+ if(!w){w={id:uid(),date:dateKey(new Date()),name:'Тренировка',note:'',startedAt:Date.now(),durationSec:null};db.workouts.push(w);db.currentWorkoutId=w.id;}
+ return w;
+}
+function startWorkout(){if(currentWorkout()){go('#/workout');return;}ensureWorkout();save();go('#/workout');}
+function makeWex(wid,exId){const x={id:uid(),workoutId:wid,exerciseId:exId,order:wexOf(wid).length,note:'',restSec:null};db.workoutExercises.push(x);return x;}
+function newSet(xid,src={}){const s={id:uid(),workoutExerciseId:xid,type:src.type||'working',weight:src.weight??null,reps:src.reps??null,minutes:src.minutes??null,distanceKm:src.distanceKm??null,done:!!src.done,note:''};db.sets.push(s);return s;}
+function addExerciseToWorkout(exId){
+ const w=ensureWorkout();
+ const x=makeWex(w.id,exId);
+ newSet(x.id);
+ ui.addOpen=false;ui.exQ='';ui.newExOpen=false;
+ save(); render();
+}
+function addSet(xid,done){
+ const last=setsOf(xid).slice(-1)[0];
+ newSet(xid,{...(last||{}),type:'working',done:!!done});
+ save(); render();
+}
+function deleteWorkout(id){
+ const xs=db.workoutExercises.filter(x=>x.workoutId===id).map(x=>x.id);
+ db.sets=db.sets.filter(s=>!xs.includes(s.workoutExerciseId));
+ db.workoutExercises=db.workoutExercises.filter(x=>x.workoutId!==id);
+ db.workouts=db.workouts.filter(w=>w.id!==id);
+ if(db.currentWorkoutId===id) db.currentWorkoutId=null;
+ save();
+}
+function deleteWex(id){
+ const x=db.workoutExercises.find(y=>y.id===id);
+ if(!x) return;
+ if(!confirm('Удалить упражнение и его подходы?')) return;
+ db.sets=db.sets.filter(s=>s.workoutExerciseId!==id);
+ db.workoutExercises=db.workoutExercises.filter(y=>y.id!==id);
+ wexOf(x.workoutId).forEach((y,i)=>y.order=i);
+ save(); render();
+}
+function finishWorkout(){
+ const w=currentWorkout();
+ if(!w) return;
+ const xs=wexOf(w.id);
+ const all=xs.flatMap(x=>setsOf(x.id));
+ const doneN=all.filter(s=>s.done).length;
+ if(!doneN){
+   if(!confirm('Нет выполненных подходов. Удалить тренировку?')) return;
+   deleteWorkout(w.id); toast('Тренировка удалена'); go('#/'); return;
+ }
+ const undone=all.length-doneN;
+ if(undone&&!confirm(`Подходов без отметки: ${undone}. Они не сохранятся. Завершить тренировку?`)) return;
+ const ids=xs.map(x=>x.id);
+ db.sets=db.sets.filter(s=>!ids.includes(s.workoutExerciseId)||s.done);
+ const emptyX=ids.filter(id=>!db.sets.some(s=>s.workoutExerciseId===id));
+ db.workoutExercises=db.workoutExercises.filter(x=>!emptyX.includes(x.id));
+ wexOf(w.id).forEach((x,i)=>x.order=i);
+ w.name=w.name.trim()||'Тренировка';
+ w.durationSec=Math.max(1,Math.round((Date.now()-w.startedAt)/1000));
+ db.currentWorkoutId=null;
+ ui.addOpen=false;ui.textOpen=false;ui.calc=null;
+ rest=null;
+ save(); updateRest();
+ toast('Тренировка сохранена');
+ go('#/history/'+w.id);
+}
+function toggleDone(id){
+ const s=db.sets.find(x=>x.id===id);
+ if(!s) return;
+ const x=db.workoutExercises.find(y=>y.id===s.workoutExerciseId);
+ const ex=exById(x?.exerciseId)||{type:'strength'};
+ if(!s.done){
+   const ok=ex.type==='cardio'?((s.minutes||0)>0||(s.distanceKm||0)>0):(s.weight!=null&&s.reps!=null&&s.reps>0);
+   if(!ok){toast(ex.type==='cardio'?'Укажите минуты или дистанцию':'Введите вес и повторы (повторы больше 0)');return;}
+   s.done=true; save(); startRest(restFor(x)); render(); return;
+ }
+ s.done=false; save(); render();
+}
+function startTemplate(id){
+ const t=db.templates.find(x=>x.id===id);
+ if(!t) return;
+ if(currentWorkout()){toast('Сначала завершите текущую тренировку');go('#/workout');return;}
+ const w={id:uid(),date:dateKey(new Date()),name:t.name,note:'',startedAt:Date.now(),durationSec:null};
+ db.workouts.push(w); db.currentWorkoutId=w.id;
+ t.exercises.filter(te=>exById(te.exerciseId)).forEach((te,idx)=>{
+   const x={id:uid(),workoutId:w.id,exerciseId:te.exerciseId,order:idx,note:'',restSec:te.restSec??null};
+   db.workoutExercises.push(x);
+   const src=lastFinished(te.exerciseId)?.sets||[];
+   const n=Math.max(1,(te.sets||[]).length);
+   for(let i=0;i<n;i++){
+     const ts=(te.sets||[])[i]||(te.sets||[])[(te.sets||[]).length-1]||{};
+     const ls=src[i]||src[src.length-1];
+     newSet(x.id,{
+       type:ts.type||'working',
+       weight:ls?ls.weight:(ts.weight??null),
+       reps:ls?ls.reps:(ts.reps??null),
+       minutes:ls?ls.minutes:(ts.minutes??null),
+       distanceKm:ls?ls.distanceKm:(ts.distanceKm??null)
+     });
+   }
+ });
+ save(); go('#/workout');
+}
+function saveTemplate(){
+ const w=currentWorkout();
+ if(!w) return;
+ const xs=wexOf(w.id);
+ if(!xs.length){toast('Сначала добавьте упражнения');return;}
+ const name=prompt('Название шаблона',w.name);
+ if(!name||!name.trim()) return;
+ db.templates.push({id:uid(),name:name.trim(),exercises:xs.map(x=>({exerciseId:x.exerciseId,restSec:x.restSec,sets:setsOf(x.id).map(s=>({type:s.type,weight:s.weight,reps:s.reps,minutes:s.minutes,distanceKm:s.distanceKm}))}))});
+ save(); toast('Шаблон сохранён'); render();
+}
+
+/* ---------- отдых ---------- */
+function restFor(x){return x?.restSec??db.settings.restDefault;}
+function startRest(sec){
+ if(!sec||sec<=0) return;
+ rest={end:Date.now()+sec*1000};
+ $('#rest-time').textContent=fmtDur(sec);
+ updateRest();
+}
+function restDone(natural){
+ rest=null; updateRest();
+ if(natural){beep();toast('Отдых закончен');}
+}
+function updateRest(){$('#rest').classList.toggle('hidden',!rest);}
+function beep(){
+ try{
+   const C=window.AudioContext||window.webkitAudioContext;
+   const ctx=new C();
+   [0,.35,.7].forEach(t=>{
+     const o=ctx.createOscillator(),g=ctx.createGain();
+     o.frequency.value=880; o.connect(g); g.connect(ctx.destination);
+     const s=ctx.currentTime+t;
+     g.gain.setValueAtTime(.3,s); g.gain.exponentialRampToValueAtTime(.001,s+.25);
+     o.start(s); o.stop(s+.3);
+   });
+ }catch(e){}
+ if(navigator.vibrate) navigator.vibrate([300,150,300]);
+}
+function tick(){
+ const now=Date.now();
+ $$('[data-start]').forEach(el=>{el.textContent=fmtDur((now-Number(el.dataset.start))/1000);});
+ if(rest){
+   const left=Math.ceil((rest.end-now)/1000);
+   if(left<=0) restDone(true); else $('#rest-time').textContent=fmtDur(left);
+ }
+}
+
+/* ---------- маршрутизация и отрисовка ---------- */
+function go(h){if(location.hash===h)render();else location.hash=h;}
+function parseRoute(){const [a='',b='']=location.hash.replace(/^#\/?/,'').split('/');return{page:a||'home',id:b};}
+function applyTheme(){
+ const t=db.settings.theme;
+ const dark=t==='dark'||(t==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);
+ document.documentElement.dataset.theme=dark?'dark':'light';
+}
+function render(){
+ const {page,id}=parseRoute();
+ const views={
+   home:viewHome,
+   workout:viewWorkout,
+   history:()=>id?viewWorkoutDetail(id):viewHistory(),
+   exercises:()=>id?viewExerciseDetail(id):viewExercises(),
+   progress:viewProgress,
+   settings:viewSettings,
+   selftest:viewSelfTests
+ };
+ const fn=Object.prototype.hasOwnProperty.call(views,page)?views[page]:null;
+ $('#app').innerHTML=fn?fn():notFound('Страница не найдена','#/');
+ $$('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.nav===page));
+ applyTheme(); tick(); updateRest();
+}
+function toast(msg){
+ const el=document.createElement('div');
+ el.className='toast'; el.textContent=msg;
+ $('#toasts').appendChild(el);
+ setTimeout(()=>el.remove(),2600);
+}
+function notFound(msg,link){return `<div class="card empty"><h2>${esc(msg)}</h2><a class="btn btn-primary" href="${link}">Назад</a></div>`;}
+function download(name,content,type){
+ const url=URL.createObjectURL(new Blob([content],{type}));
+ const a=document.createElement('a');
+ a.href=url; a.download=name;
+ document.body.appendChild(a); a.click(); a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+/* ---------- главная ---------- */
+function viewHome(){
+ const cur=currentWorkout();
+ const done=finished().sort((a,b)=>b.startedAt-a.startedAt);
+ const last=done[0];
+ const week=done.filter(w=>w.date>=keyAgo(6));
+ const weekTon=week.reduce((s,w)=>s+tonnage(w.id),0);
+ const avg=week.length?Math.round(week.reduce((s,w)=>s+w.durationSec,0)/week.length/60):0;
+ let h='<h1>Главная</h1>';
+ if(!db.workouts.length) h+='<div class="card empty"><p>Пока нет тренировок. Начните первую</p></div>';
+ h+=cur
+  ? `<button class="btn btn-primary btn-xl btn-block" data-act="go-workout">Продолжить · <span data-start="${cur.startedAt}">${fmtDur((Date.now()-cur.startedAt)/1000)}</span></button>`
+  : '<button class="btn btn-primary btn-xl btn-block" data-act="start">Начать тренировку</button>';
+ if(last){
+   const xs=wexOf(last.id);
+   const hints=xs.map(x=>{const ex=exById(x.exerciseId);const t=progressionHint(ex);return t?`<div>${esc(ex.name)}: ${t}</div>`:'';}).join('');
+   h+=`<h2>Последняя тренировка</h2><a class="link-card" href="#/history/${last.id}"><div class="row between"><b>${esc(last.name)}</b><span class="muted small">${fmtDate(last.date)}</span></div><div class="muted small">${xs.length} упр. · ${setsDone(last.id)} подходов</div></a>`;
+   if(hints) h+=`<div class="hint">${hints}</div>`;
+ }
+ h+='<h2>Шаблоны</h2>';
+ h+=db.templates.length
+  ? db.templates.map(t=>{
+      const names=t.exercises.map(e=>exById(e.exerciseId)?.name).filter(Boolean).join(', ');
+      return `<div class="card"><b>${esc(t.name)}</b><div class="muted small">${esc(names||'Нет упражнений')}</div><div class="actions"><button class="btn btn-primary" data-act="start-tpl" data-id="${t.id}">Запустить</button><button class="btn" data-act="ren-tpl" data-id="${t.id}">Переименовать</button><button class="btn btn-danger" data-act="del-tpl" data-id="${t.id}">Удалить</button></div></div>`;
+    }).join('')
+  : '<p class="muted">Шаблонов пока нет. Сохраните тренировку как шаблон на странице «Тренировка».</p>';
+ h+=`<h2>Последние 7 дней</h2><div class="stats"><div class="stat"><b>${week.length}</b><span>тренировок</span></div><div class="stat"><b>${fmtTon(weekTon)}</b><span>тоннаж, ${unitL()}</span></div><div class="stat"><b>${avg} мин</b><span>средняя длительность</span></div></div>`;
+ return h;
+}
+
+/* ---------- тренировка ---------- */
+function viewWorkout(){
+ const w=currentWorkout();
+ if(!w) return `<h1>Тренировка</h1><div class="card empty"><h2>Нет активной тренировки</h2><p class="muted">Начните новую или запустите шаблон на главной странице.</p><button class="btn btn-primary btn-xl" data-act="start">Начать тренировку</button></div>`;
+ const xs=wexOf(w.id);
+ return `<h1>Тренировка</h1>
+ <div class="card">
+  <div class="row between"><div class="timer"><span data-start="${w.startedAt}">${fmtDur((Date.now()-w.startedAt)/1000)}</span></div><span class="muted small">${fmtDate(w.date)}</span></div>
+  <input class="inp big" style="margin-top:8px" value="${esc(w.name)}" placeholder="Название тренировки" data-kind="workout" data-id="${w.id}" data-field="name">
+  <textarea class="inp" rows="2" style="margin-top:8px" placeholder="Заметка к тренировке" data-kind="workout" data-id="${w.id}" data-field="note">${esc(w.note)}</textarea>
+ </div>
+ <div class="actions">
+  <button class="btn btn-primary" data-act="toggle-add">+ Добавить упражнение</button>
+  <button class="btn" data-act="toggle-text">Ввести текстом</button>
+  <button class="btn" data-act="calc" data-c="plate">Калькулятор блинов</button>
+  <button class="btn" data-act="calc" data-c="warm">Калькулятор разминки</button>
+ </div>
+ ${ui.addOpen?addPanel():''}
+ ${ui.textOpen?textPanel():''}
+ ${ui.calc==='plate'?platePanel():''}
+ ${ui.calc==='warm'?warmPanel():''}
+ <div id="wex-list">${xs.length?xs.map(x=>exCard(x)).join(''):'<div class="card empty muted">Пока нет упражнений. Нажмите «Добавить упражнение» или «Ввести текстом».</div>'}</div>
+ <div class="actions">
+  <button class="btn" data-act="save-tpl">Сохранить как шаблон</button>
+  <button class="btn btn-ok btn-xl" data-act="finish">Завершить тренировку</button>
+ </div>`;
+}
+function exCard(x){
+ const ex=exById(x.exerciseId)||{id:'',name:'Упражнение удалено',muscleGroups:[],equipment:'',type:'strength'};
+ const tr=ex.targetRepRange;
+ const hint=progressionHint(ex);
+ const target=tr&&tr.min!=null&&tr.max!=null&&ex.type!=='cardio'?` · цель ${tr.min}–${tr.max} повт.`:'';
+ return `<article class="card ex" data-id="${x.id}">
+  <div class="ex-head">
+   <div class="handle" title="Перетащите, чтобы переставить">⠿</div>
+   <div class="grow">
+    <div class="ex-name">${esc(ex.name)}${ex.isCustom?' <span class="tag">своё</span>':''}</div>
+    <div class="muted small">${esc(ex.muscleGroups.join(', '))}${ex.equipment?' · '+esc(ex.equipment):''}${target}</div>
+   </div>
+   <button class="icon-btn" data-act="del-wex" data-id="${x.id}" aria-label="Удалить упражнение">🗑</button>
+  </div>
+  ${prevLine(ex)}
+  ${hint?`<div class="hint">${hint}</div>`:''}
+  <div class="ex-settings"><label class="small muted">Отдых, с <input class="inp sm" type="number" inputmode="numeric" min="0" step="5" placeholder="${db.settings.restDefault}" value="${x.restSec??''}" data-kind="wex" data-id="${x.id}" data-field="restSec"></label></div>
+  <input class="inp" placeholder="заметка к упражнению" value="${esc(x.note)}" data-kind="wex" data-id="${x.id}" data-field="note">
+  <div class="sets">${setsOf(x.id).map(s=>setRow(s,ex,false)).join('')}</div>
+  <button class="btn btn-ghost btn-block" data-act="add-set" data-id="${x.id}" style="margin-top:8px">+ подход</button>
+ </article>`;
+}
+function setRow(s,ex,edit){
+ const cardio=ex.type==='cardio';
+ const opts=Object.entries(SET_TYPES).map(([k,v])=>`<option value="${k}" ${s.type===k?'selected':''}>${v}</option>`).join('');
+ const fields=cardio
+  ? `<input class="inp" type="number" inputmode="decimal" min="0" step="0.5" placeholder="минуты" value="${s.minutes??''}" data-kind="set" data-id="${s.id}" data-field="minutes"><input class="inp" type="number" inputmode="decimal" min="0" step="0.1" placeholder="км" value="${s.distanceKm??''}" data-kind="set" data-id="${s.id}" data-field="distanceKm">`
+  : `<input class="inp" type="number" inputmode="decimal" min="0" step="0.5" placeholder="${unitL()}" value="${toDisp(s.weight)}" data-kind="set" data-id="${s.id}" data-field="weight"><input class="inp" type="number" inputmode="numeric" min="0" step="1" placeholder="повт." value="${s.reps??''}" data-kind="set" data-id="${s.id}" data-field="reps">`;
+ const check=edit?'':`<button class="done-btn ${s.done?'on':''}" data-act="toggle-done" data-id="${s.id}" aria-label="Выполнено">✓</button>`;
+ return `<div class="set ${s.done&&!edit?'done':''}">
+  <div class="set-row ${edit?'edit':''}">${fields}${check}<button class="icon-btn sm" data-act="del-set" data-id="${s.id}" aria-label="Удалить подход">✕</button></div>
+  <div class="set-meta"><select class="inp" data-kind="set" data-id="${s.id}" data-field="type">${opts}</select><input class="inp" placeholder="заметка к подходу" value="${esc(s.note)}" data-kind="set" data-id="${s.id}" data-field="note"></div>
+ </div>`;
+}
+function addPanel(){
+ return `<div class="card">
+  <h3>Добавить упражнение</h3>
+  <input id="ex-q" class="inp" type="search" placeholder="Поиск по библиотеке" value="${esc(ui.exQ)}">
+  <div id="add-list" style="margin-top:8px">${addList()}</div>
+  <div class="actions"><button class="btn" data-act="toggle-newex">${ui.newExOpen?'Скрыть форму':'+ Создать новое упражнение'}</button></div>
+  ${ui.newExOpen?`${exForm('nx',{})}<button class="btn btn-primary btn-block" data-act="create-ex" data-form="nx" data-then="workout">Создать и добавить</button>`:''}
+ </div>`;
+}
+function addList(){
+ const q=norm(ui.exQ);
+ const list=db.exercises.filter(e=>!q||norm(e.name).includes(q)).slice(0,40);
+ return list.length
+  ? list.map(e=>`<button class="list-item" data-act="pick-ex" data-id="${e.id}"><b>${esc(e.name)}</b>${e.isCustom?' <span class="tag">своё</span>':''}<div class="muted small">${esc(e.muscleGroups.join(', '))} · ${esc(e.equipment)}</div></button>`).join('')
+  : '<p class="muted">Ничего не найдено. Создайте новое упражнение.</p>';
+}
+function exForm(p,e){
+ const sec=(e.muscleGroups||[]).slice(1);
+ const pri=(e.muscleGroups||[])[0]||MUSCLES[0];
+ const mn=e.targetRepRange?e.targetRepRange.min:8;
+ const mx=e.targetRepRange?e.targetRepRange.max:12;
+ const step=e.weightStep??2.5;
+ return `<div class="form">
+  <label class="fl">Название<input class="inp" id="${p}-name" value="${esc(e.name||'')}" placeholder="Например, жим в хаммере"></label>
+  <label class="fl">Основная группа<select class="inp" id="${p}-muscle">${MUSCLES.map(m=>`<option ${m===pri?'selected':''}>${m}</option>`).join('')}</select></label>
+  <div class="fl">Вспомогательные группы<div class="chips">${MUSCLES.map(m=>`<label class="chip"><input type="checkbox" name="${p}-sec" value="${m}" ${sec.includes(m)?'checked':''}>${m}</label>`).join('')}</div></div>
+  <label class="fl">Оборудование<select class="inp" id="${p}-equip">${EQUIP.map(x=>`<option ${x===(e.equipment||'другое')?'selected':''}>${x}</option>`).join('')}</select></label>
+  <label class="fl">Тип<select class="inp" id="${p}-type"><option value="strength" ${e.type!=='cardio'?'selected':''}>Силовое</option><option value="cardio" ${e.type==='cardio'?'selected':''}>Кардио</option></select></label>
+  <div class="grid3">
+   <label class="fl">Повторы от<input class="inp" type="number" inputmode="numeric" min="0" id="${p}-min" value="${mn??''}"></label>
+   <label class="fl">до<input class="inp" type="number" inputmode="numeric" min="0" id="${p}-max" value="${mx??''}"></label>
+   <label class="fl">Шаг, ${unitL()}<input class="inp" type="number" inputmode="decimal" min="0" step="0.5" id="${p}-step" value="${toDisp(step)}"></label>
+  </div>
+  <label class="fl">Описание техники<textarea class="inp" id="${p}-desc" rows="2">${esc(e.description||'')}</textarea></label>
+ </div>`;
+}
+function readExForm(p){
+ const name=$('#'+p+'-name').value.trim();
+ if(!name) throw new Error('Введите название упражнения');
+ const muscle=$('#'+p+'-muscle').value;
+ const sec=$$(`input[name="${p}-sec"]:checked`).map(x=>x.value).filter(m=>m!==muscle);
+ const type=$('#'+p+'-type').value;
+ const mn=parseNum($('#'+p+'-min').value), mx=parseNum($('#'+p+'-max').value);
+ if(mn!=null&&mx!=null&&mn>mx) throw new Error('Нижняя граница повторов больше верхней');
+ const step=numKg($('#'+p+'-step').value);
+ return {
+   id:uid(),name,muscleGroups:[muscle,...sec],
+   equipment:$('#'+p+'-equip').value,
+   description:$('#'+p+'-desc').value.trim(),
+   type,isCustom:true,
+   targetRepRange:type==='strength'&&mn!=null&&mx!=null?{min:Math.trunc(mn),max:Math.trunc(mx)}:null,
+   weightStep:step>0?step:2.5
+ };
+}
+function createExFromForm(p,then){
+ let ex;
+ try{ex=readExForm(p);}catch(e){toast(e.message);return;}
+ db.exercises.push(ex);
+ if(then==='workout'){addExerciseToWorkout(ex.id);return;}
+ ui.newExPage=false;
+ save(); toast('Упражнение создано'); render();
+}
+
+/* ---------- быстрая запись текстом ---------- */
+function textPanel(){
+ return `<div class="card">
+  <h3>Быстрая запись текстом</h3>
+  <p class="muted small">По одной строке на упражнение: <b>Название: вес×повторы, вес×повторы</b>. Пример: Жим лёжа: 80×8, 80×8, 85×6</p>
+  <textarea id="txt" class="inp mono" rows="5" placeholder="Жим лёжа: 80×8, 80×8, 85×6">${esc(ui.text)}</textarea>
+  <div id="txt-preview" style="margin-top:10px">${textPreviewHtml()}</div>
+  <div class="actions"><button class="btn btn-ok btn-block" data-act="text-save">Подтвердить и сохранить</button></div>
+ </div>`;
+}
+/* Подходы ищутся по шаблону «вес×повторы», а не делением по запятым:
+   так «77,5*5» читается как вес 77.5 и 5 повторов, а «80×8, 80×8» — как два подхода. */
+function parseSetsText(str,unit){
+ const re=/(\d+(?:[.,]\d+)?)\s*[×xх*]\s*(\d+)/gi;
+ const sets=[],bad=[];
+ let last=0,m;
+ while((m=re.exec(str))!==null){
+   const gap=str.slice(last,m.index);
+   if(/[^\s,;]/.test(gap)) bad.push(gap.trim());
+   last=re.lastIndex;
+   const reps=parseInt(m[2],10);
+   if(reps<=0) return {error:`повторы должны быть больше 0 («${m[0]}»)`};
+   sets.push({weight:fromUnit(parseFloat(m[1].replace(',','.')),unit),reps});
+ }
+ const tail=str.slice(last);
+ if(/[^\s,;]/.test(tail)) bad.push(tail.trim());
+ if(bad.length) return {error:`не понятно «${bad[0]}», нужно вес×повторы`};
+ if(!sets.length) return {error:'нет подходов'};
+ return {sets};
+}
+function parseTextEntry(text,unit){
+ return String(text||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(line=>{
+   const i=line.indexOf(':');
+   if(i<1) return {line,error:'нет двоеточия после названия'};
+   const name=line.slice(0,i).trim();
+   if(!name) return {line,error:'пустое название'};
+   const r=parseSetsText(line.slice(i+1),unit||db.settings.unit);
+   return r.error?{line,error:r.error}:{line,name,sets:r.sets};
+ });
+}
+function suggest(name){
+ const q=norm(name);
+ if(!q) return [];
+ const words=q.split(/\s+/).filter(w=>w.length>1);
+ return db.exercises.map(e=>{
+   const n=norm(e.name);
+   const hit=words.filter(w=>n.includes(w)).length;
+   let s=0;
+   if(n===q) s=3;
+   else if(words.length&&hit===words.length) s=2;
+   else if(hit>0) s=1;
+   return {id:e.id,name:e.name,s};
+ }).filter(x=>x.s>0).sort((a,b)=>b.s-a.s||a.name.localeCompare(b.name,'ru')).slice(0,6);
+}
+/* По умолчанию выбираем упражнение только при точном или единственном совпадении; иначе — создать новое. */
+function defaultChoice(name){
+ const o=suggest(name);
+ if(!o.length) return 'new';
+ if(o[0].s===3||(o[0].s===2&&(o.length===1||o[1].s<2))) return o[0].id;
+ return 'new';
+}
+function textPreviewHtml(){
+ const rows=parseTextEntry(ui.text);
+ if(!rows.length) return '<p class="muted small">Строки появятся здесь после ввода.</p>';
+ const body=rows.map(r=>{
+   if(r.error) return `<tr><td colspan="3" class="err-txt">«${esc(r.line)}»: ${esc(r.error)}</td></tr>`;
+   const key=norm(r.name);
+   const opts=suggest(r.name);
+   const def=ui.textChoice[key]??defaultChoice(r.name);
+   return `<tr><td>${esc(r.name)}</td><td><select class="inp" data-act="choose" data-key="${esc(key)}">${opts.map(o=>`<option value="${o.id}" ${o.id===def?'selected':''}>${esc(o.name)}</option>`).join('')}<option value="new" ${def==='new'?'selected':''}>+ Создать «${esc(r.name)}»</option></select></td><td>${r.sets.length}: ${r.sets.map(s=>`${toDisp(s.weight)}×${s.reps}`).join(', ')}</td></tr>`;
+ }).join('');
+ return `<div class="wrapx"><table class="tbl"><tr><th>Название</th><th>Упражнение</th><th>Подходы</th></tr>${body}</table></div>`;
+}
+function saveTextEntry(){
+ const rows=parseTextEntry(ui.text);
+ if(!rows.length){toast('Введите хотя бы одну строку');return;}
+ if(rows.some(r=>r.error)){toast('Исправьте строки с ошибками');return;}
+ const w=ensureWorkout();
+ const created={};
+ for(const r of rows){
+   const key=norm(r.name);
+   let exId=ui.textChoice[key]??defaultChoice(r.name);
+   if(exId==='new'){
+     if(!created[key]){
+       const ex={id:uid(),name:r.name,muscleGroups:[],equipment:'другое',description:'',type:'strength',isCustom:true,targetRepRange:null,weightStep:2.5};
+       db.exercises.push(ex);
+       created[key]=ex.id;
+     }
+     exId=created[key];
+   }
+   const x=wexOf(w.id).find(y=>y.exerciseId===exId)||makeWex(w.id,exId);
+   r.sets.forEach(s=>newSet(x.id,{weight:s.weight,reps:s.reps,done:true}));
+ }
+ ui.text=''; ui.textOpen=false; ui.textChoice={};
+ save(); toast(`Добавлено строк: ${rows.length}`); render();
+}
+
+/* ---------- калькуляторы ---------- */
+function platePanel(){
+ return `<div class="card">
+  <h3>Калькулятор блинов</h3>
+  <div class="grid2">
+   <label class="fl">Вес штанги, ${unitL()}<input class="inp" id="pc-bar" type="number" inputmode="decimal" min="0" step="0.5" value="${ui.pcBar??toDisp(20)}"></label>
+   <label class="fl">Целевой вес, ${unitL()}<input class="inp" id="pc-target" type="number" inputmode="decimal" min="0" step="0.5" value="${esc(ui.pcTarget)}"></label>
+  </div>
+  <div id="pc-out">${plateOut()}</div>
+ </div>`;
+}
+function plateSplit(target,bar){
+ if(target<bar) return {error:true};
+ let per=(target-bar)/2;
+ const used=[];
+ for(const p of [25,20,15,10,5,2.5,1.25]){
+   const n=Math.floor(per/p+1e-9);
+   if(n>0){used.push([p,n]);per-=n*p;}
+ }
+ return {used,left:Math.round(per*1000)/1000};
+}
+function plateOut(){
+ const target=numKg(ui.pcTarget);
+ const bar=numKg(ui.pcBar??toDisp(20))??20;
+ if(target==null) return '<p class="muted">Введите целевой вес.</p>';
+ const r=plateSplit(target,bar);
+ if(r.error) return '<p class="err-txt">Целевой вес меньше веса штанги.</p>';
+ const list=r.used.length?r.used.map(([p,n])=>`<span class="plate">${p} кг × ${n}</span>`).join(' '):'не нужны';
+ const got=target-2*r.left;
+ return `<p>На одну сторону: ${list}</p>`
+  +(r.left>0?`<p class="warn">Точно набрать не получится. Ближайший вес из доступных дисков: ${toDisp(got)} ${unitL()}.</p>`:'')
+  +'<p class="muted small">Диски: 25, 20, 15, 10, 5, 2.5 и 1.25 кг.</p>';
+}
+function warmPanel(){
+ return `<div class="card">
+  <h3>Калькулятор разминки</h3>
+  <label class="fl">Рабочий вес, ${unitL()}<input class="inp" id="wc-work" type="number" inputmode="decimal" min="0" step="0.5" value="${esc(ui.wcWork)}"></label>
+  <div id="wc-out">${warmOut()}</div>
+ </div>`;
+}
+function warmupPlan(work){return [[.5,8],[.7,5],[.85,3]].map(([p,r])=>({pct:Math.round(p*100),r,w:Math.round(work*p/2.5)*2.5}));}
+function warmOut(){
+ const w=numKg(ui.wcWork);
+ if(w==null) return '<p class="muted">Введите рабочий вес.</p>';
+ return `<div class="wrapx"><table class="tbl"><tr><th>Доля</th><th>Вес, ${unitL()}</th><th>Повторы</th></tr>${warmupPlan(w).map(x=>`<tr><td>${x.pct}%</td><td>${toDisp(x.w)}</td><td>× ${x.r}</td></tr>`).join('')}</table></div><p class="muted small">Веса округлены до 2.5 кг.</p>`;
+}
+
+/* ---------- история ---------- */
+function viewHistory(){
+ const m=ui.histMonth;
+ const y=m.getFullYear(), mo=m.getMonth();
+ const offset=(new Date(y,mo,1).getDay()+6)%7;
+ const days=new Date(y,mo+1,0).getDate();
+ const marks=new Set(db.workouts.map(w=>w.date));
+ const today=dateKey(new Date());
+ let cells=['пн','вт','ср','чт','пт','сб','вс'].map(d=>`<span class="wk">${d}</span>`).join('');
+ for(let i=0;i<offset;i++) cells+='<span></span>';
+ for(let d=1;d<=days;d++){
+   const k=`${y}-${pad(mo+1)}-${pad(d)}`;
+   const cls=[marks.has(k)?'has':'',k===today?'today':'',ui.histDay===k?'sel':''].filter(Boolean).join(' ');
+   cells+=`<button class="${cls}" data-act="hist-day" data-d="${k}">${d}</button>`;
+ }
+ const title=m.toLocaleDateString('ru-RU',{month:'long',year:'numeric'});
+ return `<h1>История</h1>
+ <div class="card">
+  <div class="month"><button class="icon-btn" data-act="hist-month" data-d="-1" aria-label="Предыдущий месяц">‹</button><b style="text-transform:capitalize">${title}</b><button class="icon-btn" data-act="hist-month" data-d="1" aria-label="Следующий месяц">›</button></div>
+  <div class="cal">${cells}</div>
+  ${ui.histDay?`<div class="actions"><button class="btn" data-act="hist-day" data-d="${ui.histDay}">Показать все дни</button></div>`:''}
+ </div>
+ <input id="hist-q" class="inp" type="search" placeholder="Поиск по названию тренировки или упражнения" value="${esc(ui.histQ)}">
+ <div id="hist-list" style="margin-top:10px">${histListHtml()}</div>`;
+}
+function histListHtml(){
+ const q=norm(ui.histQ);
+ const list=[...db.workouts].sort((a,b)=>b.startedAt-a.startedAt).filter(w=>{
+   if(ui.histDay&&w.date!==ui.histDay) return false;
+   if(!q) return true;
+   if(norm(w.name).includes(q)) return true;
+   return wexOf(w.id).some(x=>{const e=exById(x.exerciseId);return e&&norm(e.name).includes(q);});
+ });
+ if(!list.length) return `<div class="card empty muted">${db.workouts.length?'Ничего не найдено.':'История появится после первой тренировки.'}</div>`;
+ return list.map(w=>{
+   const active=w.durationSec==null;
+   const n=wexOf(w.id).length;
+   const info=active?`<span class="tag">идёт</span> ${n} упр.`:`${fmtDur(w.durationSec)} · ${fmtTon(tonnage(w.id))} ${unitL()} · ${n} упр.`;
+   return `<a class="link-card" href="${active?'#/workout':'#/history/'+w.id}"><div class="row between"><b>${esc(w.name)}</b><span class="muted small">${fmtDate(w.date)}</span></div><div class="muted small">${info}</div></a>`;
+ }).join('');
+}
+function viewWorkoutDetail(id){
+ const w=db.workouts.find(x=>x.id===id);
+ if(!w) return notFound('Тренировка не найдена','#/history');
+ const cards=wexOf(w.id).map(x=>{
+   const ex=exById(x.exerciseId)||{id:'',name:'Упражнение удалено',type:'strength',muscleGroups:[]};
+   return `<div class="card">
+    <div class="row between"><a href="#/exercises/${ex.id}"><b>${esc(ex.name)}</b></a><button class="icon-btn sm" data-act="del-wex" data-id="${x.id}" aria-label="Удалить упражнение">🗑</button></div>
+    ${setsOf(x.id).map(s=>setRow(s,ex,true)).join('')}
+    <button class="btn btn-ghost btn-block" data-act="add-set" data-id="${x.id}" data-done="1" style="margin-top:8px">+ подход</button>
+   </div>`;
+ }).join('');
+ return `<a href="#/history">← История</a>
+ <h1 style="margin-top:6px">Тренировка</h1>
+ <div class="card">
+  <input class="inp big" value="${esc(w.name)}" data-kind="workout" data-id="${w.id}" data-field="name">
+  <div class="muted small" style="margin-top:6px">${fmtDate(w.date)} · ${fmtDur(w.durationSec||0)} · тоннаж ${fmtTon(tonnage(w.id))} ${unitL()}</div>
+  <textarea class="inp" rows="2" style="margin-top:8px" placeholder="Заметка к тренировке" data-kind="workout" data-id="${w.id}" data-field="note">${esc(w.note)}</textarea>
+ </div>
+ ${cards||'<div class="card empty muted">В тренировке нет упражнений.</div>'}
+ <button class="btn btn-danger btn-block" data-act="del-workout" data-id="${w.id}">Удалить тренировку</button>`;
+}
+
+/* ---------- упражнения ---------- */
+function viewExercises(){
+ const grOpts=MUSCLES.map(m=>`<option ${ui.exGroup===m?'selected':''}>${m}</option>`).join('');
+ const eqOpts=EQUIP.map(x=>`<option ${ui.exEquip===x?'selected':''}>${x}</option>`).join('');
+ return `<h1>Упражнения</h1>
+ <input id="exl-q" class="inp" type="search" placeholder="Поиск по названию" value="${esc(ui.exListQ)}">
+ <div class="grid2" style="margin:8px 0">
+  <select id="exl-g" class="inp"><option value="">Все группы</option>${grOpts}</select>
+  <select id="exl-e" class="inp"><option value="">Всё оборудование</option>${eqOpts}</select>
+ </div>
+ <div class="actions"><button class="btn btn-primary" data-act="toggle-newex-page">${ui.newExPage?'Скрыть форму':'+ Создать своё упражнение'}</button></div>
+ ${ui.newExPage?`<div class="card">${exForm('ne',{})}<button class="btn btn-primary btn-block" data-act="create-ex" data-form="ne" data-then="page">Сохранить упражнение</button></div>`:''}
+ <div id="exl-list">${exListHtml()}</div>`;
+}
+function exListHtml(){
+ const q=norm(ui.exListQ);
+ const list=db.exercises
+   .filter(e=>(!q||norm(e.name).includes(q))&&(!ui.exGroup||e.muscleGroups.includes(ui.exGroup))&&(!ui.exEquip||e.equipment===ui.exEquip))
+   .sort((a,b)=>a.name.localeCompare(b.name,'ru'));
+ if(!list.length) return '<div class="card empty muted">Ничего не найдено. Измените фильтры или создайте своё упражнение.</div>';
+ return list.map(e=>`<a class="link-card" href="#/exercises/${e.id}"><div class="row between"><b>${esc(e.name)}</b>${e.isCustom?'<span class="tag">своё</span>':''}</div><div class="muted small">${esc(e.muscleGroups.join(', '))} · ${esc(e.equipment)}${e.type==='cardio'?' · кардио':''}</div></a>`).join('');
+}
+function exerciseSessions(ex){
+ const out=[];
+ for(const w of finished().sort((a,b)=>a.startedAt-b.startedAt)){
+   const x=db.workoutExercises.find(y=>y.workoutId===w.id&&y.exerciseId===ex.id);
+   if(!x) continue;
+   const sets=setsOf(x.id).filter(s=>s.done&&s.type!=='warmup');
+   if(!sets.length) continue;
+   let maxW=0,ton=0,e1=0,best=null,minutes=0;
+   for(const s of sets){
+     minutes+=s.minutes||0;
+     if(s.weight!=null&&s.reps!=null&&s.reps>0){
+       ton+=s.weight*s.reps;
+       maxW=Math.max(maxW,s.weight);
+       const e=est1rm(s.weight,s.reps);
+       if(!best||e>e1){e1=e;best=s;}
+     }
+   }
+   out.push({date:w.date,maxW,ton,e1,best,minutes});
+ }
+ return out;
+}
+function metricPoints(ex,metric){
+ const cardio=ex.type==='cardio';
+ return exerciseSessions(ex).map(s=>{
+   if(cardio){const y=Math.round(s.minutes*10)/10;return{x:shortDate(s.date),y,label:`${fmtDate(s.date)}: ${y} мин`};}
+   const raw=metric==='ton'?s.ton:metric==='1rm'?s.e1:s.maxW;
+   const y=metric==='ton'?Math.round(toDisp(raw)||0):toDisp(raw);
+   return{x:shortDate(s.date),y,label:`${fmtDate(s.date)}: ${y} ${unitL()}`};
+ }).filter(p=>p.y!=null&&!Number.isNaN(p.y));
+}
+function prTable(ex){
+ if(ex.type==='cardio') return '';
+ const ss=exerciseSessions(ex).filter(s=>s.best);
+ const recs=[];
+ let run=0;
+ for(const s of ss) if(s.e1>run){run=s.e1;recs.push(s);}
+ if(!recs.length) return '<h2>Личные рекорды</h2><p class="muted">Пока нет рекордов. Записывайте подходы с весом и повторами.</p>';
+ const newest=recs[recs.length-1];
+ return `<h2>Личные рекорды</h2><div class="wrapx"><table class="tbl"><tr><th>Дата</th><th>Вес, ${unitL()}</th><th>Повт.</th><th>1RM, ${unitL()}</th></tr>${recs.slice().reverse().map(s=>`<tr class="${s===newest?'pr':''}"><td>${shortDate(s.date)}</td><td>${toDisp(s.best.weight)}</td><td>${s.best.reps}</td><td>${toDisp(s.e1)}</td></tr>`).join('')}</table></div><p class="muted small">Подсвечен последний новый рекорд. Разминочные подходы не учитываются.</p>`;
+}
+function exHistoryList(ex){
+ const rows=finished().sort((a,b)=>b.startedAt-a.startedAt).map(w=>{
+   const x=db.workoutExercises.find(y=>y.workoutId===w.id&&y.exerciseId===ex.id);
+   if(!x) return '';
+   const sets=setsOf(x.id).filter(s=>s.done);
+   return `<a class="link-card" href="#/history/${w.id}"><div class="row between"><b>${fmtDate(w.date)}</b><span class="muted small">${esc(w.name)}</span></div><div class="small">${sets.map(s=>fmtSet(s,ex)).join(', ')||'—'}</div></a>`;
+ }).join('');
+ return rows||'<p class="muted">Подходов пока нет.</p>';
+}
+function viewExerciseDetail(id){
+ const ex=exById(id);
+ if(!ex) return notFound('Упражнение не найдено','#/exercises');
+ const cardio=ex.type==='cardio';
+ const tr=ex.targetRepRange||{min:null,max:null};
+ const metricSel=cardio
+   ? '<option value="min" selected>Минуты за тренировку</option>'
+   : METRICS.map(([k,v])=>`<option value="${k}" ${ui.progMetric===k?'selected':''}>${v}</option>`).join('');
+ return `<a href="#/exercises">← Упражнения</a>
+ <h1 style="margin-top:6px">${esc(ex.name)} ${ex.isCustom?'<span class="tag">своё</span>':''}</h1>
+ <div class="card">
+  <div class="muted small">Группы: ${esc(ex.muscleGroups.join(', '))}</div>
+  <div class="muted small">Оборудование: ${esc(ex.equipment)} · ${cardio?'кардио':'силовое'}</div>
+  <p>${esc(ex.description||'Описание не добавлено.')}</p>
+  ${cardio?'':`<div class="grid3">
+   <label class="fl">Повторы от<input class="inp" type="number" inputmode="numeric" min="0" value="${tr.min??''}" data-kind="ex" data-id="${ex.id}" data-field="targetMin"></label>
+   <label class="fl">до<input class="inp" type="number" inputmode="numeric" min="0" value="${tr.max??''}" data-kind="ex" data-id="${ex.id}" data-field="targetMax"></label>
+   <label class="fl">Шаг, ${unitL()}<input class="inp" type="number" inputmode="decimal" min="0" step="0.5" value="${toDisp(ex.weightStep??2.5)}" data-kind="ex" data-id="${ex.id}" data-field="weightStep"></label>
+  </div>`}
+  ${ex.isCustom?`<button class="btn btn-danger" data-act="del-ex" data-id="${ex.id}">Удалить упражнение</button>`:''}
+ </div>
+ <h2>График прогресса</h2>
+ <div class="card"><select class="inp" data-act="metric">${metricSel}</select><div style="margin-top:8px">${lineChart(metricPoints(ex,ui.progMetric))}</div></div>
+ ${prTable(ex)}
+ <h2>Все подходы</h2>
+ ${exHistoryList(ex)}`;
+}
+
+/* ---------- прогресс ---------- */
+function viewProgress(){
+ const tabs=`<div class="actions"><button class="btn tab ${ui.progTab==='ex'?'on':''}" data-act="prog-tab" data-tab="ex">Упражнения</button><button class="btn tab ${ui.progTab==='body'?'on':''}" data-act="prog-tab" data-tab="body">Замеры тела</button></div>`;
+ return `<h1>Прогресс</h1>${tabs}${ui.progTab==='body'?viewBody():viewStrength()}`;
+}
+function viewStrength(){
+ const doneEx=new Set(db.workoutExercises.filter(x=>db.workouts.some(w=>w.id===x.workoutId&&w.durationSec!=null)).map(x=>x.exerciseId));
+ const list=db.exercises.filter(e=>doneEx.has(e.id)).sort((a,b)=>a.name.localeCompare(b.name,'ru'));
+ if(!list.length) return `<div class="card empty"><p>Пока нет данных. Завершите первую тренировку, и здесь появится прогресс.</p></div>${muscleVolume()}`;
+ if(!list.some(e=>e.id===ui.progEx)) ui.progEx=list[0].id;
+ const ex=exById(ui.progEx);
+ const metrics=ex.type==='cardio'?[['min','Минуты за тренировку']]:METRICS;
+ if(!metrics.some(([k])=>k===ui.progMetric)) ui.progMetric=metrics[0][0];
+ return `<div class="card">
+  <select class="inp" data-act="prog-ex-sel">${list.map(e=>`<option value="${e.id}" ${e.id===ex.id?'selected':''}>${esc(e.name)}</option>`).join('')}</select>
+  <select class="inp" style="margin-top:8px" data-act="metric">${metrics.map(([k,v])=>`<option value="${k}" ${ui.progMetric===k?'selected':''}>${v}</option>`).join('')}</select>
+  <div style="margin-top:8px">${lineChart(metricPoints(ex,ui.progMetric))}</div>
+ </div>
+ ${prTable(ex)}
+ ${muscleVolume()}`;
+}
+function muscleVolume(){
+ const since=keyAgo(6);
+ const counts={};
+ MUSCLES.forEach(m=>counts[m]=0);
+ for(const w of finished()){
+   if(w.date<since) continue;
+   for(const x of wexOf(w.id)){
+     const ex=exById(x.exerciseId);
+     if(!ex||!ex.muscleGroups.length) continue;
+     const n=setsOf(x.id).filter(s=>s.done&&s.type!=='warmup').length;
+     if(counts[ex.muscleGroups[0]]!=null) counts[ex.muscleGroups[0]]+=n;
+   }
+ }
+ const max=Math.max(10,...Object.values(counts));
+ const bars=MUSCLES.map(m=>`<div class="bar-row"><span>${m}</span><div class="bar-bg"><div class="bar" style="width:${Math.round(counts[m]/max*100)}%"></div></div><b>${counts[m]}</b></div>`).join('');
+ const low=MUSCLES.filter(m=>counts[m]<10);
+ const high=MUSCLES.filter(m=>counts[m]>20);
+ const hints=(low.length?`<div class="hint">Меньше 10 подходов за 7 дней: ${low.join(', ')}.</div>`:'')
+   +(high.length?`<div class="hint">Больше 20 подходов за 7 дней: ${high.join(', ')}.</div>`:'');
+ return `<h2>Объём за 7 дней по группам мышц</h2><div class="card">${bars}${hints}<p class="muted small">Считаются рабочие подходы по основной группе упражнения.</p></div>`;
+}
+function viewBody(){
+ const sorted=[...db.bodyMetrics].sort((a,b)=>a.date.localeCompare(b.date));
+ const fields=[['weight','Вес',unitL()],['waist','Талия','см'],['chest','Грудь','см'],['biceps','Бицепс','см'],['hips','Бёдра','см']];
+ const form=`<div class="card">
+  <h3>Новый замер</h3>
+  <label class="fl">Дата<input class="inp" type="date" id="bm-date" value="${dateKey(new Date())}"></label>
+  <div class="grid2">
+   <label class="fl">Вес, ${unitL()}<input class="inp" type="number" inputmode="decimal" min="0" step="0.1" id="bm-weight"></label>
+   <label class="fl">Талия, см<input class="inp" type="number" inputmode="decimal" min="0" step="0.1" id="bm-waist"></label>
+   <label class="fl">Грудь, см<input class="inp" type="number" inputmode="decimal" min="0" step="0.1" id="bm-chest"></label>
+   <label class="fl">Бицепс, см<input class="inp" type="number" inputmode="decimal" min="0" step="0.1" id="bm-biceps"></label>
+   <label class="fl">Бёдра, см<input class="inp" type="number" inputmode="decimal" min="0" step="0.1" id="bm-hips"></label>
+  </div>
+  <div class="actions"><button class="btn btn-primary btn-block" data-act="save-metric">Сохранить замер</button></div>
+ </div>`;
+ const charts=fields.map(([f,t,u])=>{
+   const pts=sorted.filter(m=>m[f]!=null).map(m=>{
+     const y=f==='weight'?toDisp(m[f]):m[f];
+     return{x:shortDate(m.date),y,label:`${fmtDate(m.date)}: ${y} ${u}`};
+   });
+   return pts.length?`<h3>${t}, ${u}</h3><div class="card">${lineChart(pts)}</div>`:'';
+ }).join('');
+ const list=sorted.slice().reverse().map(m=>{
+   const parts=fields.filter(([f])=>m[f]!=null).map(([f,t,u])=>`${t}: ${f==='weight'?toDisp(m[f]):m[f]} ${u}`);
+   return `<div class="card" style="padding:10px"><div class="row between"><b>${fmtDate(m.date)}</b><button class="icon-btn sm" data-act="del-metric" data-id="${m.id}" aria-label="Удалить замер">✕</button></div><div class="small muted">${parts.join(' · ')||'нет значений'}</div></div>`;
+ }).join('');
+ return form+charts+(list?`<h2>Все замеры</h2>${list}`:'');
+}
+function saveMetric(){
+ const date=$('#bm-date').value;
+ if(!date){toast('Укажите дату');return;}
+ const field=id=>{
+   const v=$('#'+id).value.trim();
+   if(v==='') return null;
+   const n=parseNum(v);
+   if(n==null||n<0) throw new Error('Значения должны быть числами не меньше 0');
+   return n;
+ };
+ try{
+   const weight=field('bm-weight');
+   const m={id:uid(),date,weight:weight==null?null:toKg(weight),waist:field('bm-waist'),chest:field('bm-chest'),biceps:field('bm-biceps'),hips:field('bm-hips')};
+   if(['weight','waist','chest','biceps','hips'].every(k=>m[k]==null)){toast('Введите хотя бы одно значение');return;}
+   db.bodyMetrics.push(m);
+   save(); toast('Замер сохранён'); render();
+ }catch(e){toast(e.message);}
+}
+
+/* ---------- график ---------- */
+function lineChart(pts){
+ if(!pts.length) return '<p class="muted small">Пока нет данных для графика.</p>';
+ const W=340,H=170,L=42,R=10,T=12,B=24;
+ let min=Math.min(...pts.map(p=>p.y)), max=Math.max(...pts.map(p=>p.y));
+ if(min===max){const d=min?Math.abs(min)*0.1:1;min-=d;max+=d;}
+ else{const pad2=(max-min)*0.12;min-=pad2;max+=pad2;}
+ const X=i=>pts.length===1?(L+W-R)/2:L+i*(W-L-R)/(pts.length-1);
+ const Y=v=>T+(H-T-B)*(1-(v-min)/(max-min));
+ const path=pts.length>1
+   ? `<polyline fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" points="${pts.map((p,i)=>`${X(i).toFixed(1)},${Y(p.y).toFixed(1)}`).join(' ')}"/>`
+   : '';
+ const dots=pts.map((p,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="4" fill="var(--accent)"><title>${esc(p.label)}</title></circle>`).join('');
+ const axis=[min,max].map(v=>`<line x1="${L}" x2="${W-R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="var(--border)"/><text x="2" y="${(Y(v)+4).toFixed(1)}" font-size="11" fill="var(--muted)">${Math.round(v*10)/10}</text>`).join('');
+ const xl=`<text x="${L}" y="${H-6}" font-size="11" fill="var(--muted)">${esc(pts[0].x)}</text><text x="${W-R}" y="${H-6}" text-anchor="end" font-size="11" fill="var(--muted)">${esc(pts[pts.length-1].x)}</text>`;
+ return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="График">${axis}${path}${dots}${xl}</svg>`;
+}
+
+/* ---------- настройки ---------- */
+function viewSettings(){
+ const s=db.settings;
+ const themeOpts=[['system','Как в системе'],['light','Светлая'],['dark','Тёмная']].map(([v,t])=>`<option value="${v}" ${s.theme===v?'selected':''}>${t}</option>`).join('');
+ return `<h1>Настройки</h1>
+ <div class="card">
+  <label class="fl">Единицы веса<select class="inp" data-act="set-unit"><option value="kg" ${s.unit==='kg'?'selected':''}>Килограммы (кг)</option><option value="lb" ${s.unit==='lb'?'selected':''}>Фунты (lb)</option></select></label>
+  <label class="fl">Тема<select class="inp" data-act="set-theme">${themeOpts}</select></label>
+  <label class="fl">Отдых по умолчанию, сек<input class="inp" type="number" inputmode="numeric" min="0" step="5" value="${s.restDefault}" data-act="set-rest"></label>
+  <p class="muted small">При смене единиц все значения пересчитываются автоматически: вес хранится в килограммах.</p>
+ </div>
+ <div class="card">
+  <h3>Данные</h3>
+  <div class="actions"><button class="btn" data-act="export-json">Экспорт JSON</button><button class="btn" data-act="export-csv">Экспорт CSV</button></div>
+  <p class="muted small">CSV — три файла: подходы, замеры тела и шаблоны. Открываются в Excel и Google Таблицах.</p>
+  <h3>Импорт JSON</h3>
+  <input class="inp" type="file" id="imp-file" accept=".json,application/json">
+  <div id="imp-box"></div>
+ </div>
+ <div class="card"><h3>Опасная зона</h3><button class="btn btn-danger btn-block" data-act="wipe">Удалить все данные</button></div>
+ <p class="muted small" style="text-align:center">Данные хранятся только в этом браузере.</p>`;
+}
+
+/* ---------- редактирование полей ---------- */
+function parseField(field,raw){
+ const txt=String(raw??'').trim();
+ const empty=txt==='';
+ if(field==='weight'||field==='weightStep'){
+   if(empty) return null;
+   const n=parseNum(txt);
+   if(n==null||n<0) throw new Error('Вес — число не меньше 0');
+   return toKg(n);
+ }
+ if(field==='reps'||field==='restSec'){
+   if(empty) return null;
+   const n=parseNum(txt);
+   if(n==null||n<0||!Number.isInteger(n)) throw new Error('Введите целое число не меньше 0');
+   return n;
+ }
+ if(['minutes','distanceKm','waist','chest','biceps','hips'].includes(field)){
+   if(empty) return null;
+   const n=parseNum(txt);
+   if(n==null||n<0) throw new Error('Введите число не меньше 0');
+   return n;
+ }
+ return raw;
+}
+function bindField(el){
+ const {kind,id,field}=el.dataset;
+ const coll={set:db.sets,wex:db.workoutExercises,workout:db.workouts,ex:db.exercises}[kind];
+ const obj=coll&&coll.find(x=>x.id===id);
+ if(!obj) return;
+ try{
+   if(field==='targetMin'||field==='targetMax'){
+     const r=obj.targetRepRange||{min:null,max:null};
+     const v=parseField('reps',el.value);
+     if(field==='targetMin') r.min=v; else r.max=v;
+     obj.targetRepRange=r;
+   } else {
+     obj[field]=parseField(field,el.value);
+   }
+   save();
+ }catch(e){toast(e.message);render();}
+}
+
+/* ---------- действия по кнопкам ---------- */
+const ACTIONS={
+ 'start':()=>startWorkout(),
+ 'go-workout':()=>go('#/workout'),
+ 'start-tpl':b=>startTemplate(b.dataset.id),
+ 'ren-tpl':b=>{
+   const t=db.templates.find(x=>x.id===b.dataset.id);
+   if(!t) return;
+   const n=prompt('Новое название шаблона',t.name);
+   if(n&&n.trim()){t.name=n.trim();save();render();}
+ },
+ 'del-tpl':b=>{
+   if(!confirm('Удалить шаблон?')) return;
+   db.templates=db.templates.filter(x=>x.id!==b.dataset.id);
+   save(); render();
+ },
+ 'toggle-add':()=>{ui.addOpen=!ui.addOpen;ui.textOpen=false;render();},
+ 'toggle-text':()=>{ui.textOpen=!ui.textOpen;ui.addOpen=false;render();},
+ 'calc':b=>{ui.calc=ui.calc===b.dataset.c?null:b.dataset.c;render();},
+ 'pick-ex':b=>addExerciseToWorkout(b.dataset.id),
+ 'toggle-newex':()=>{ui.newExOpen=!ui.newExOpen;render();},
+ 'toggle-newex-page':()=>{ui.newExPage=!ui.newExPage;render();},
+ 'create-ex':b=>createExFromForm(b.dataset.form,b.dataset.then),
+ 'text-save':()=>saveTextEntry(),
+ 'save-tpl':()=>saveTemplate(),
+ 'finish':()=>finishWorkout(),
+ 'toggle-done':b=>toggleDone(b.dataset.id),
+ 'add-set':b=>addSet(b.dataset.id,b.dataset.done==='1'),
+ 'del-set':b=>{db.sets=db.sets.filter(s=>s.id!==b.dataset.id);save();render();},
+ 'del-wex':b=>deleteWex(b.dataset.id),
+ 'del-workout':b=>{
+   if(!confirm('Удалить тренировку без возможности восстановления?')) return;
+   deleteWorkout(b.dataset.id);
+   toast('Тренировка удалена');
+   go('#/history');
+ },
+ 'hist-month':b=>{const d=new Date(ui.histMonth);d.setMonth(d.getMonth()+Number(b.dataset.d));ui.histMonth=d;render();},
+ 'hist-day':b=>{ui.histDay=ui.histDay===b.dataset.d?null:b.dataset.d;render();},
+ 'prog-tab':b=>{ui.progTab=b.dataset.tab;render();},
+ 'save-metric':()=>saveMetric(),
+ 'del-metric':b=>{db.bodyMetrics=db.bodyMetrics.filter(m=>m.id!==b.dataset.id);save();render();},
+ 'del-ex':b=>deleteCustomEx(b.dataset.id),
+ 'export-json':()=>exportJSON(),
+ 'export-csv':()=>exportCSV(),
+ 'import-replace':()=>applyImport('replace'),
+ 'import-merge':()=>applyImport('merge'),
+ 'wipe':()=>wipeAll(),
+ 'rest-adj':b=>{
+   if(!rest) return;
+   rest.end+=Number(b.dataset.d)*1000;
+   if(rest.end<=Date.now()) restDone(false); else tick();
+ },
+ 'rest-skip':()=>restDone(false)
+};
+
+/* ---------- экспорт, импорт, удаление ---------- */
+function exportJSON(){
+ download(`gymdiary-${dateKey(new Date())}.json`,JSON.stringify({app:'gymdiary',...db},null,2),'application/json');
+}
+function exportCSV(){
+ const cell=v=>{if(v==null)return '';const s=String(v);return /[;"\n\r]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};
+ const toCsv=rows=>'\uFEFF'+rows.map(r=>r.map(cell).join(';')).join('\r\n');
+ const setRows=[['дата','тренировка','упражнение','подход','тип','вес, кг','повторы','минуты','дистанция, км','заметка']];
+ [...db.workouts].sort((a,b)=>a.startedAt-b.startedAt).forEach(w=>{
+   wexOf(w.id).forEach(x=>{
+     const ex=exById(x.exerciseId);
+     setsOf(x.id).forEach((s,i)=>setRows.push([w.date,w.name,ex?ex.name:'',i+1,SET_TYPES[s.type]||s.type,s.weight,s.reps,s.minutes,s.distanceKm,s.note]));
+   });
+ });
+ const bodyRows=[['дата','вес, кг','талия, см','грудь, см','бицепс, см','бёдра, см'],...db.bodyMetrics.map(m=>[m.date,m.weight,m.waist,m.chest,m.biceps,m.hips])];
+ const tplRows=[['шаблон','упражнение','подход','тип','вес, кг','повторы']];
+ db.templates.forEach(t=>t.exercises.forEach(te=>{
+   const ex=exById(te.exerciseId);
+   (te.sets||[]).forEach((s,i)=>tplRows.push([t.name,ex?ex.name:'',i+1,SET_TYPES[s.type]||s.type,s.weight,s.reps]));
+ }));
+ const d=dateKey(new Date());
+ download(`sets-${d}.csv`,toCsv(setRows),'text/csv;charset=utf-8');
+ download(`body-${d}.csv`,toCsv(bodyRows),'text/csv;charset=utf-8');
+ download(`templates-${d}.csv`,toCsv(tplRows),'text/csv;charset=utf-8');
+}
+function onImportFile(input){
+ const f=input.files[0];
+ if(!f) return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+   try{
+     const d=JSON.parse(reader.result);
+     if(!d||d.app!=='gymdiary'||!Array.isArray(d.workouts)||!Array.isArray(d.sets)) throw new Error('bad');
+     pendingImport=d;
+     $('#imp-box').innerHTML=`<p>Файл прочитан: тренировок — ${d.workouts.length}, подходов — ${d.sets.length}.</p><div class="actions"><button class="btn btn-danger" data-act="import-replace">Заменить текущие данные</button><button class="btn btn-primary" data-act="import-merge">Дополнить</button></div>`;
+   }catch(e){
+     pendingImport=null;
+     toast('Это не файл дневника тренировок');
+   }
+ };
+ reader.readAsText(f);
+}
+function applyImport(mode){
+ const d=pendingImport;
+ if(!d) return;
+ if(mode==='replace'){
+   if(!confirm('Текущие данные будут заменены данными из файла. Продолжить?')) return;
+   const fresh=freshDB();
+   const o={...fresh};
+   DATA_KEYS.forEach(k=>{if(Array.isArray(d[k])) o[k]=d[k];});
+   o.settings={...fresh.settings,...(d.settings||{})};
+   o.currentWorkoutId=d.currentWorkoutId??null;
+   db=o;
+   rest=null; updateRest();
+ } else {
+   DATA_KEYS.forEach(k=>{
+     const ids=new Set(db[k].map(x=>x.id));
+     (Array.isArray(d[k])?d[k]:[]).forEach(x=>{if(!ids.has(x.id)) db[k].push(x);});
+   });
+ }
+ pendingImport=null;
+ save(); toast('Импорт выполнен'); go('#/');
+}
+function deleteCustomEx(id){
+ const ex=exById(id);
+ if(!ex||!ex.isCustom) return;
+ const used=db.workoutExercises.some(x=>x.exerciseId===id);
+ if(!confirm(used?'Упражнение есть в тренировках. Удалить его из библиотеки? Записи останутся без названия.':'Удалить упражнение?')) return;
+ db.exercises=db.exercises.filter(e=>e.id!==id);
+ save(); go('#/exercises');
+}
+function wipeAll(){
+ const a=prompt('Все тренировки, шаблоны и замеры будут удалены. Чтобы подтвердить, введите УДАЛИТЬ');
+ if(a===null) return;
+ if(a.trim()!=='УДАЛИТЬ'){toast('Текст не совпал, данные не удалены');return;}
+ const s=db.settings;
+ db=freshDB();
+ db.settings=s;
+ rest=null; updateRest();
+ save(); toast('Все данные удалены'); go('#/');
+}
+
+/* ---------- самопроверка расчётов ---------- */
+function viewSelfTests(){
+ const T=[];
+ const t=(n,ok)=>T.push([n,!!ok]);
+ t('1RM при одном повторе равен весу', est1rm(100,1)===100);
+ t('1RM по формуле Эпли: 100 × 10 ≈ 133.3', Math.abs(est1rm(100,10)-133.33)<0.01);
+ t('фунты переводятся в килограммы', Math.abs(fromUnit(220.462,'lb')-100)<0.01);
+ t('килограммы переводятся в фунты', Math.abs(toUnit(100,'lb')-220.462)<0.01);
+ const p=parseTextEntry('Жим лёжа: 80×8, 80x8, 85х6, 77,5*5','kg');
+ t('разбор текста: четыре подхода', p[0].sets&&p[0].sets.length===4);
+ t('разбор текста: дробный вес и звёздочка', p[0].sets&&p[0].sets[3].weight===77.5&&p[0].sets[3].reps===5);
+ t('разбор текста: ошибка при неверном формате', !!parseTextEntry('Присед: 100 на 5','kg')[0].error);
+ const ps=plateSplit(100,20);
+ t('блины: 100 кг при грифе 20 кг', JSON.stringify(ps.used)==='[[25,1],[15,1]]'&&ps.left===0);
+ t('разминка: округление до 2.5 кг', warmupPlan(87).map(x=>x.w).join()==='42.5,60,75');
+ return `<h1>Самопроверка</h1><div class="card">${T.map(([n,ok])=>`<div class="row" style="padding:5px 0"><span>${ok?'✅':'❌'}</span><span>${esc(n)}</span></div>`).join('')}</div><p class="muted small">Открыть: index.html#/selftest. Проверяются чистые функции расчётов и разбора текста.</p>`;
+}
+
+/* ---------- события ---------- */
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-act]');
+ if(!t) return;
+ const fn=ACTIONS[t.dataset.act];
+ if(fn){e.preventDefault();fn(t,e);}
+});
+document.addEventListener('change',e=>{
+ const t=e.target;
+ const a=t.dataset.act;
+ if(t.dataset.kind){bindField(t);return;}
+ if(t.id==='imp-file'){onImportFile(t);return;}
+ if(t.id==='exl-g'){ui.exGroup=t.value;$('#exl-list').innerHTML=exListHtml();return;}
+ if(t.id==='exl-e'){ui.exEquip=t.value;$('#exl-list').innerHTML=exListHtml();return;}
+ if(a==='choose'){ui.textChoice[t.dataset.key]=t.value;return;}
+ if(a==='metric'){ui.progMetric=t.value;render();return;}
+ if(a==='prog-ex-sel'){ui.progEx=t.value;render();return;}
+ if(a==='set-unit'){db.settings.unit=t.value;save();render();return;}
+ if(a==='set-theme'){db.settings.theme=t.value;save();render();return;}
+ if(a==='set-rest'){
+   const n=parseNum(t.value);
+   if(n==null||n<0){toast('Введите число не меньше 0');render();return;}
+   db.settings.restDefault=Math.round(n);
+   save(); toast('Сохранено');
+ }
+});
+document.addEventListener('input',e=>{
+ const t=e.target;
+ switch(t.id){
+   case 'ex-q': ui.exQ=t.value; $('#add-list').innerHTML=addList(); break;
+   case 'exl-q': ui.exListQ=t.value; $('#exl-list').innerHTML=exListHtml(); break;
+   case 'hist-q': ui.histQ=t.value; $('#hist-list').innerHTML=histListHtml(); break;
+   case 'txt': ui.text=t.value; $('#txt-preview').innerHTML=textPreviewHtml(); break;
+   case 'pc-bar': ui.pcBar=t.value; $('#pc-out').innerHTML=plateOut(); break;
+   case 'pc-target': ui.pcTarget=t.value; $('#pc-out').innerHTML=plateOut(); break;
+   case 'wc-work': ui.wcWork=t.value; $('#wc-out').innerHTML=warmOut(); break;
+ }
+});
+
+/* ---------- перетаскивание упражнений в тренировке ---------- */
+document.addEventListener('pointerdown',e=>{
+ const h=e.target.closest('.handle');
+ if(!h) return;
+ const card=h.closest('.ex');
+ if(!card) return;
+ drag={card,list:card.parentElement};
+ card.classList.add('dragging');
+ try{h.setPointerCapture(e.pointerId);}catch(err){}
+ e.preventDefault();
+});
+document.addEventListener('pointermove',e=>{
+ if(!drag) return;
+ const others=$$('.ex',drag.list).filter(c=>c!==drag.card);
+ const before=others.find(c=>{const r=c.getBoundingClientRect();return e.clientY<r.top+r.height/2;});
+ if(before){
+   if(before!==drag.card.nextElementSibling) drag.list.insertBefore(drag.card,before);
+ } else if(drag.list.lastElementChild!==drag.card){
+   drag.list.appendChild(drag.card);
+ }
+});
+function endDrag(){
+ if(!drag) return;
+ const {card,list}=drag;
+ card.classList.remove('dragging');
+ let changed=false;
+ $$('.ex',list).forEach((c,i)=>{
+   const x=db.workoutExercises.find(y=>y.id===c.dataset.id);
+   if(x&&x.order!==i){x.order=i;changed=true;}
+ });
+ drag=null;
+ if(changed) save();
+}
+document.addEventListener('pointerup',endDrag);
+document.addEventListener('pointercancel',endDrag);
+
+/* ---------- запуск ---------- */
+db=loadDB();
+ui.histMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+window.addEventListener('hashchange',()=>{window.scrollTo(0,0);render();});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(db.settings.theme==='system') applyTheme();});
+setInterval(tick,1000);
+render();
+</script>
+</body>
+</html>
